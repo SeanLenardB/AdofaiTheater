@@ -6,6 +6,8 @@ using System.Text;
 
 namespace AdofaiTheater.Foundation.Drawing
 {
+    // NOTE(seanlb): These two classes might not end up being abstract.
+    // I'm making them abstract because this forces me to implement some useful classes.
     public abstract class TheaterElement
     {
         public Transform Transform { get; set; } = new();
