@@ -41,5 +41,9 @@ namespace AdofaiTheater.Foundation.Basic
         public static Matrix2 operator *(Matrix2 left, Matrix2 right) { return new(left * right.I, left * right.J); }
         public static Matrix2 operator *(Matrix2 matrix, double multiplier) { return new(matrix.I * multiplier, matrix.J * multiplier); }
         public static Matrix2 operator /(Matrix2 matrix, double divisor) { return new(matrix.I / divisor, matrix.J / divisor); }
+
+        public static bool operator ==(Matrix2 left, Matrix2 right) { return left.I == right.I && left.J == right.J; }
+        public static bool operator !=(Matrix2 left, Matrix2 right) { return !(left == right); }
+
     }
 }

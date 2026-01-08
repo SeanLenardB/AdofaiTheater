@@ -30,5 +30,8 @@ namespace AdofaiTheater.Foundation.Basic
             if (Parent is null) { return LocalTransformation; }
             return Parent.GlobalTransformation() * LocalTransformation;
         }
+
+
+
     }
 }

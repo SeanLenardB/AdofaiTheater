@@ -1,4 +1,5 @@
 ﻿using AdofaiTheater.Foundation.Basic;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,21 +17,21 @@ namespace AdofaiTheater.Foundation.Drawing
         /// </summary>
         public int Layer { get; set; } = 0;
 
-        public virtual void Draw() { }
+        public virtual void Draw(SKCanvas canvas) { }
     }
 
     public abstract class TheaterElementCollection : TheaterElement
     {
         private List<TheaterElement> Elements { get; set; } = [];
 
-        public override void Draw()
+        public override void Draw(SKCanvas canvas)
         {
             foreach (var element in Elements)
             {
                 // NOTE(seanlb): This is temporarily disabled. Might support recursive elements for meme in the future.
                 Debug.Assert(element != this, "Cannot have recursive elements!");
 
-                element.Draw();
+                element.Draw(canvas);
             }
         }
 
