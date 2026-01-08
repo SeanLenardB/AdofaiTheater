@@ -1,4 +1,6 @@
-﻿namespace AdofaiTheater
+﻿using AdofaiTheater.Foundation.Theater;
+
+namespace AdofaiTheater
 {
     public class Program
     {

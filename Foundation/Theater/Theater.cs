@@ -1,6 +1,7 @@
-﻿using SkiaSharp;
+﻿using AdofaiTheater.Foundation.Drawing;
+using SkiaSharp;
 
-namespace AdofaiTheater
+namespace AdofaiTheater.Foundation.Theater
 {
     public class Theater
     {
