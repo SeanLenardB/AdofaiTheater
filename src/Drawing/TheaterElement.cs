@@ -4,8 +4,7 @@ using System.Text;
 
 namespace AdofaiTheater
 {
-    public interface ITheaterElement
+    public abstract class TheaterElement
     {
-        void Draw();
     }
 }

@@ -12,10 +12,11 @@ namespace AdofaiTheater
 
 
 
-        public List<ITheaterElement> Elements { get; private set; } = [];
+        public List<TheaterElement> Elements { get; private set; } = [];
         public void Animate()
         {
             using SKSurface surface = SKSurface.Create(new SKImageInfo(Configuration.Width, Configuration.Height));
+
 
             surface.Canvas.DrawCircle(100, 100, 50, new() { Color = new(0xff, 0xff, 0xff, 0xaf) });
 
