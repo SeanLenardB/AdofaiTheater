@@ -1,7 +1,11 @@
-﻿public class Program
+﻿namespace AdofaiTheater
 {
-    private static void Main(string[] args)
+    public class Program
     {
-        Console.WriteLine("Hello, World!");
+        private static void Main(string[] args)
+        {
+            Theater mainTheater = new();
+            mainTheater.Animate();
+        }
     }
 }
