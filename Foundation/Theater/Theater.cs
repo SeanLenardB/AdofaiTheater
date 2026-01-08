@@ -18,6 +18,7 @@ namespace AdofaiTheater.Foundation.Theater
         {
             using SKSurface surface = SKSurface.Create(new SKImageInfo(Configuration.Width, Configuration.Height));
 
+            foreach (var element in Elements.OrderByDescending(e => e.Layer)) { element.Draw(); }
 
             surface.Canvas.DrawCircle(100, 100, 50, new() { Color = new(0xff, 0xff, 0xff, 0xaf) });
 

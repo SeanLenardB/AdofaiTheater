@@ -6,17 +6,15 @@ namespace AdofaiTheater.Foundation.Basic
 {
     public class Transform
     {
-        public Transform(Transform parent)
-        {
-            Parent = parent;
-        }
+        public Transform() { }
+        public Transform(Transform parent) => Parent = parent;
 
 
 
         public Vector2 LocalTranslation { get; set; } = new();
         public Matrix2 LocalTransformation { get; set; } = new();
 
-        public Transform? Parent { get; private set; } = null;
+        public Transform? Parent { get; set; } = null;
 
 
 
