@@ -27,7 +27,7 @@ namespace AdofaiTheater.Foundation.Core
 		/// <returns><see cref="NextFrame">true</see> if the theater isn't done. <see cref="NextFrame">false</see> otherwise.</returns>
 		public bool NextFrame()
 		{
-			if (this.Events.Count == 0) { return false; }
+			if (this.Events.Count == 0 && this.CurrentEvent is null) { return false; }
 			this.CurrentEvent ??= this.Events.Dequeue();
 
 			if (!this.CurrentEvent.NextFrame()) { this.CurrentEvent = null; }
