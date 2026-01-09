@@ -2,6 +2,7 @@
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Text;
 
@@ -15,12 +16,10 @@ namespace AdofaiTheater.Foundation.Basic
         {
             using (SKImage image = SKImage.FromEncodedData(this.ImagePath))
             {
-                using (SKSurface bufferSurface = SKSurface.Create(new SKImageInfo(image.Width, image.Height)))
-                {
-                    bufferSurface.Canvas.DrawImage(image, SKPoint.Empty);
-                    bufferSurface.Canvas.SetMatrix(this.Transform.TotalMatrix());
-                    canvas.DrawSurface(bufferSurface, SKPoint.Empty);
-                }
+                canvas.Save();
+                canvas.Concat(this.Transform.TotalMatrix());
+                canvas.DrawImage(image, SKPoint.Empty);
+                canvas.Restore();
             }
         }
 
