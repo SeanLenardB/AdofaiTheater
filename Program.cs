@@ -1,5 +1,6 @@
 ﻿using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
+using AdofaiTheater.Foundation.Timeline;
 
 namespace AdofaiTheater
 {
@@ -16,6 +17,8 @@ namespace AdofaiTheater
 
             TheaterCharacter characterQuartrond = new();
             theater.AddElement(characterQuartrond);
+
+            theater.PushEvent(new TheaterPauseEvent(10));
 
             theater.Animate();
         }

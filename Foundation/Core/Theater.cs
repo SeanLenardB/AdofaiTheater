@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using AdofaiTheater.Foundation.Basic;
+using AdofaiTheater.Foundation.Timeline;
 using SkiaSharp;
 
 namespace AdofaiTheater.Foundation.Core
@@ -22,14 +23,16 @@ namespace AdofaiTheater.Foundation.Core
         {
             using (SKSurface surface = SKSurface.Create(new SKImageInfo(this.Configuration.Width, this.Configuration.Height)))
             {
+                int frameNumber = 0;
                 while (this.NextFrame())
                 {
+                    frameNumber++;
                     surface.Canvas.Clear();
                     foreach (var element in this.Elements.OrderByDescending(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
 
                     using (SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality))
                     {
-                        imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath("output.png")));
+                        imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{frameNumber}.png")));
                     }
                 }
             }

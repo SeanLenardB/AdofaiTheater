@@ -34,5 +34,10 @@ namespace AdofaiTheater.Foundation.Core
 
 			return true;
 		}
+
+        public void PushEvent(ITheaterEvent theaterEvent)
+        {
+            this.Events.Enqueue(theaterEvent);
+        }
 	}
 }
