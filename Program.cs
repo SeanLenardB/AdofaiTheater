@@ -1,4 +1,5 @@
-﻿using AdofaiTheater.Foundation.Theater;
+﻿using AdofaiTheater.Foundation.Drawing;
+using AdofaiTheater.Foundation.Theater;
 
 namespace AdofaiTheater
 {
@@ -7,6 +8,8 @@ namespace AdofaiTheater
         private static void Main()
         {
             Theater mainTheater = new();
+            mainTheater.Elements.Add(new TheaterImage() { ImagePath = @"Resources/ori.png" });
+
             mainTheater.Animate();
         }
     }
