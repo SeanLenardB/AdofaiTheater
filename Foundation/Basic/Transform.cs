@@ -1,35 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SkiaSharp;
 
 namespace AdofaiTheater.Foundation.Basic
 {
     public class Transform
     {
         public Transform() { }
-        public Transform(Transform parent) => Parent = parent;
+        public Transform(Transform parent) => this.Parent = parent;
 
 
 
-        public Vector2 LocalTranslation { get; set; } = new();
-        public Matrix2 LocalTransformation { get; set; } = new();
+        // NOTE(seanlb): It's not the best idea to invent the important wheel here.
+        public SKMatrix Matrix { get; set; } = SKMatrix.Identity;
 
-        public Transform? Parent { get; set; } = null;
+        /// <summary>
+        /// Z axis of the element. Smaller number (negative number) means front.
+        /// The default layer is 0.
+        /// </summary>
+        public int Layer { get; set; } = 0;
 
-
-
-        // WARN(seanlb): I have zero confidence in these two things. May not work as intended!
-        public Vector2 GlobalTranslation()
-        {
-            if (Parent is null) { return LocalTranslation; }
-            return (Parent.GlobalTransformation() * Parent.GlobalTranslation()) + LocalTranslation;
-        }
-        
-        public Matrix2 GlobalTransformation()
-        {
-            if (Parent is null) { return LocalTransformation; }
-            return Parent.GlobalTransformation() * LocalTransformation;
-        }
+		public Transform? Parent { get; set; } = null;
 
 
 

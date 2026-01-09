@@ -12,10 +12,6 @@ namespace AdofaiTheater.Foundation.Drawing
     public abstract class TheaterElement
     {
         public Transform Transform { get; set; } = new();
-        /// <summary>
-        /// Z axis, if you like. Smaller number means front.
-        /// </summary>
-        public int Layer { get; set; } = 0;
 
         public virtual void Draw(SKCanvas canvas) { }
     }
@@ -26,7 +22,7 @@ namespace AdofaiTheater.Foundation.Drawing
 
         public override void Draw(SKCanvas canvas)
         {
-            foreach (var element in Elements)
+            foreach (var element in this.Elements)
             {
                 // NOTE(seanlb): This is temporarily disabled. Might support recursive elements for meme in the future.
                 Debug.Assert(element != this, "Cannot have recursive elements!");
@@ -38,8 +34,9 @@ namespace AdofaiTheater.Foundation.Drawing
         public void Add(TheaterElement element)
         {
             // NOTE(seanlb): I don't know whether this is necessary. Better strict than loose.
-            Debug.Assert(element.Transform.Parent is null, "You are adding a non-dangling item to the colleciton! This might not be what you intended!");
-            element.Transform.Parent = Transform;
+            Debug.Assert(element.Transform.Parent is null, "You are adding a non-dangling item to the collection! This might not be what you intended!");
+            this.Elements.Add(element);
+            element.Transform.Parent = this.Transform;
         }
     }
 }
