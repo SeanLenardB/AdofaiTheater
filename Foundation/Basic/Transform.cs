@@ -21,7 +21,10 @@ namespace AdofaiTheater.Foundation.Basic
         /// </summary>
         public int Layer { get; set; } = 0;
 
-		public Transform? Parent { get; set; } = null;
+        // NOTE(seanlb): This might be changed if there are too many vector involved.
+        public (double X, double Y) Pivot { get; set; } = (0, 0);
+
+        public Transform? Parent { get; set; } = null;
 
 
 
@@ -39,12 +42,17 @@ namespace AdofaiTheater.Foundation.Basic
         }
         public Transform Rotate(double angleDegrees)
         {
-            this.Matrix = this.Matrix.PreConcat(SKMatrix.CreateRotationDegrees((float)angleDegrees));
+            this.Matrix = this.Matrix.PreConcat(SKMatrix.CreateRotationDegrees((float)angleDegrees, (float)this.Pivot.X, (float)this.Pivot.Y));
             return this;
         }
         public Transform Scale(double scaleMultiplierX, double scaleMultiplierY)
         {
             this.Matrix = this.Matrix.PreConcat(SKMatrix.CreateScale((float)scaleMultiplierX, (float)scaleMultiplierY));
+            return this;
+        }
+        public Transform SetPivot(double x, double y)
+        {
+            this.Pivot = (x, y);
             return this;
         }
     }

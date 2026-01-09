@@ -25,10 +25,10 @@ namespace AdofaiTheater.Foundation.Basic
             }
         } = "";
 
-        // NOTE(seanlb): This is a very important optimization.
-        // Remember to mark the cache dirty if the image is changed.
-        // Also remember to release the memory to prevent leaks.
-        private SKImage? _ImageCache = null;
+		// NOTE(seanlb): This is a very important optimization.
+		// Remember to mark the cache dirty if the image is changed.
+		// Also remember to release the memory to prevent leaks.
+		private SKImage? _ImageCache = null;
         public override void Draw(SKCanvas canvas)
         {
             this._ImageCache ??= SKImage.FromEncodedData(this.ImagePath);
