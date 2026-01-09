@@ -14,11 +14,12 @@ namespace AdofaiTheater
                 new TheaterImage()
                 { ImagePath = @"Resources/ori.png" }
                 .AsBackground(theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
+            theater.AddElement(
+                new TheaterImage()
+                { ImagePath = @"Resources/quartrond.png" });
 
             TheaterCharacter characterQuartrond = new();
             theater.AddElement(characterQuartrond);
-
-            theater.PushEvent(new TheaterPauseEvent(10));
 
             theater.Animate();
         }
