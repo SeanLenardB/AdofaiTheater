@@ -1,12 +1,11 @@
-﻿using AdofaiTheater.Foundation.Basic;
-using AdofaiTheater.Foundation.Core;
+﻿using AdofaiTheater.Foundation.Core;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace AdofaiTheater.Foundation.Drawing
+namespace AdofaiTheater.Foundation.Basic
 {
     public class TheaterImage : TheaterElement
     {
@@ -19,7 +18,7 @@ namespace AdofaiTheater.Foundation.Drawing
                 using (SKSurface bufferSurface = SKSurface.Create(new SKImageInfo(image.Width, image.Height)))
                 {
                     bufferSurface.Canvas.DrawImage(image, SKPoint.Empty);
-                    bufferSurface.Canvas.SetMatrix(this.Transform.Matrix);
+                    bufferSurface.Canvas.SetMatrix(this.Transform.TotalMatrix());
                     canvas.DrawSurface(bufferSurface, SKPoint.Empty);
                 }
             }
