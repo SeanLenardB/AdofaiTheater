@@ -31,5 +31,21 @@ namespace AdofaiTheater.Foundation.Basic
 
             return SKMatrix.Concat(this.Parent.TotalMatrix(), this.Matrix);
         }
+
+        public Transform Move(double deltaX, double deltaY)
+        {
+            this.Matrix = this.Matrix.PreConcat(SKMatrix.CreateTranslation((float)deltaX, (float)deltaY));
+            return this;
+        }
+        public Transform Rotate(double angleDegrees)
+        {
+            this.Matrix = this.Matrix.PreConcat(SKMatrix.CreateRotationDegrees((float)angleDegrees));
+            return this;
+        }
+        public Transform Scale(double scaleMultiplierX, double scaleMultiplierY)
+        {
+            this.Matrix = this.Matrix.PreConcat(SKMatrix.CreateScale((float)scaleMultiplierX, (float)scaleMultiplierY));
+            return this;
+        }
     }
 }
