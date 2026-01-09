@@ -24,7 +24,7 @@ namespace AdofaiTheater.Foundation.Core
             using (SKSurface surface = SKSurface.Create(new SKImageInfo(this.Configuration.Width, this.Configuration.Height)))
             {
                 int frameNumber = 0;
-                while (this.NextFrame())
+                do  // NOTE(seanlb): a do-while loop is necessary to ensure that one-frame theaters can be rendered.
                 {
                     frameNumber++;
                     surface.Canvas.Clear();
@@ -35,6 +35,7 @@ namespace AdofaiTheater.Foundation.Core
                         imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{frameNumber}.png")));
                     }
                 }
+                while (this.NextFrame());
             }
         }
 
