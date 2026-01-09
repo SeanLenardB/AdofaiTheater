@@ -1,4 +1,5 @@
-﻿using AdofaiTheater.Foundation.Drawing;
+﻿using System.Diagnostics;
+using AdofaiTheater.Foundation.Drawing;
 using SkiaSharp;
 
 namespace AdofaiTheater.Foundation.Theater
@@ -22,7 +23,7 @@ namespace AdofaiTheater.Foundation.Theater
 
                 using (SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality))
                 {
-                    imageData.SaveTo(File.OpenWrite("output.png"));
+                    imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath("output.png")));
                 }
             }
         }
@@ -34,5 +35,27 @@ namespace AdofaiTheater.Foundation.Theater
         public int Height { get; set; } = 1080;
         // NOTE(seanlb): I have no idea what this is
         public int ImageQuality { get; set; } = 100;
+
+        /// <summary>
+        /// Ends <strong>without</strong> slash.
+        /// </summary>
+        public string OutputPath
+        {
+            get; set
+            {
+                if (value.Length != 0)
+                {
+                    Debug.Assert(!(value.EndsWith('/') || value.EndsWith('\\')), "The output path should NOT end with a slash.");
+                    if (!Directory.Exists(value)) { Directory.CreateDirectory(value); }
+                }
+                field = value;  // NOTE(seanlb): Sweet C# features always surprise me
+            }
+        } = "";
+        public string ConcatenatePath(string fileName)
+        {
+            if (this.OutputPath.Length == 0) { return fileName; }
+            return this.OutputPath + '/' + fileName;
+        }
+
     }
 }

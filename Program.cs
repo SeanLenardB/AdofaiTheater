@@ -7,10 +7,11 @@ namespace AdofaiTheater
     {
         private static void Main()
         {
-            Theater mainTheater = new();
-            mainTheater.Elements.Add(new TheaterImage() { ImagePath = @"Resources/ori.png" });
+            Theater theater = new();
+            theater.Configuration.OutputPath = "output";
+            theater.Elements.Add(new TheaterImage() { ImagePath = @"Resources/ori.png" });
 
-            mainTheater.Animate();
+            theater.Animate();
         }
     }
 }
