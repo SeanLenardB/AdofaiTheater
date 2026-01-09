@@ -55,7 +55,7 @@ namespace AdofaiTheater.Foundation.Timeline
 
 			this.Action(parameter);
 
-			return this.Frame >= this.TotalFrames;
+			return this.Frame < this.TotalFrames;
 		}
 	}
 }
