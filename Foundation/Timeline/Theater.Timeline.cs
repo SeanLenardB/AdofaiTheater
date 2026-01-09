@@ -30,7 +30,7 @@ namespace AdofaiTheater.Foundation.Core
 			if (this.Events.Count == 0) { return false; }
 			this.CurrentEvent ??= this.Events.Dequeue();
 
-			if (this.CurrentEvent.NextFrame()) { this.CurrentEvent = null; }
+			if (!this.CurrentEvent.NextFrame()) { this.CurrentEvent = null; }
 
 			return true;
 		}
