@@ -1,5 +1,5 @@
-﻿using AdofaiTheater.Foundation.Core;
-using AdofaiTheater.Foundation.Drawing;
+﻿using AdofaiTheater.Foundation.Basic;
+using AdofaiTheater.Foundation.Core;
 
 namespace AdofaiTheater
 {
@@ -9,10 +9,13 @@ namespace AdofaiTheater
         {
             Theater theater = new();
             theater.Configuration.OutputPath = "output";
-            theater.Add(
+            theater.AddElement(
                 new TheaterImage()
                 { ImagePath = @"Resources/ori.png" }
                 .AsBackground(theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
+
+            TheaterCharacter characterQuartrond = new();
+            theater.AddElement(characterQuartrond);
 
             theater.Animate();
         }

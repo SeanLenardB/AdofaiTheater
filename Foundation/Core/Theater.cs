@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using AdofaiTheater.Foundation.Basic;
-using AdofaiTheater.Foundation.Drawing;
 using SkiaSharp;
 
 namespace AdofaiTheater.Foundation.Core
 {
-    public class Theater
+    // NOTE(seanlb): This part only contains the necessary part of the animation of the theater.
+    // Movement, Speaking and other events are done in Theater.Timeline.cs
+    public partial class Theater
     {
         public Theater() { }
 
@@ -16,21 +17,25 @@ namespace AdofaiTheater.Foundation.Core
 
 
 
-        public List<TheaterElement> Elements { get; private set; } = [];
+        private readonly List<TheaterElement> Elements = [];
         public void Animate()
         {
             using (SKSurface surface = SKSurface.Create(new SKImageInfo(this.Configuration.Width, this.Configuration.Height)))
             {
-                foreach (var element in this.Elements.OrderByDescending(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
-
-                using (SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality))
+                while (this.NextFrame())
                 {
-                    imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath("output.png")));
+                    surface.Canvas.Clear();
+                    foreach (var element in this.Elements.OrderByDescending(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
+
+                    using (SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality))
+                    {
+                        imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath("output.png")));
+                    }
                 }
             }
         }
 
-        public void Add(TheaterElement element)
+        public void AddElement(TheaterElement element)
         {
             // NOTE(seanlb): this class can inherit from TheaterElementCollection, but I don't feel like it.
             Debug.Assert(element.Transform.Parent is null, "You are adding a non-dangling item to the theater! This might not be what you intended!");
