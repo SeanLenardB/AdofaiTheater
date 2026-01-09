@@ -50,7 +50,7 @@ namespace AdofaiTheater.Foundation.Core
         {
             Parallel.For(0, outputBuffer.Count, i =>
             {
-                outputBuffer[i].SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{lastFrame - i}.png")));
+                outputBuffer[i].SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{lastFrame - outputBuffer.Count + i + 1}.png")));
             });
             Parallel.ForEach(outputBuffer, buffer => buffer.Dispose());
             outputBuffer.Clear();
