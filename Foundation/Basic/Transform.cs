@@ -25,5 +25,11 @@ namespace AdofaiTheater.Foundation.Basic
 
 
 
+        public SKMatrix TotalMatrix()
+        {
+            if (this.Parent is null) { return this.Matrix; }
+
+            return SKMatrix.Concat(this.Parent.TotalMatrix(), this.Matrix);
+        }
     }
 }
