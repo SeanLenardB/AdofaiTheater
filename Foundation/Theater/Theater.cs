@@ -16,13 +16,13 @@ namespace AdofaiTheater.Foundation.Theater
         public List<TheaterElement> Elements { get; private set; } = [];
         public void Animate()
         {
-            using SKSurface surface = SKSurface.Create(new SKImageInfo(Configuration.Width, Configuration.Height));
+            using SKSurface surface = SKSurface.Create(new SKImageInfo(this.Configuration.Width, this.Configuration.Height));
 
-            foreach (var element in Elements.OrderByDescending(e => e.Layer)) { element.Draw(); }
+            foreach (var element in this.Elements.OrderByDescending(e => e.Layer)) { element.Draw(surface.Canvas); }
 
             surface.Canvas.DrawCircle(100, 100, 50, new() { Color = new(0xff, 0xff, 0xff, 0xaf) });
 
-            using SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, Configuration.ImageQuality);
+            using SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality);
             imageData.SaveTo(File.OpenWrite("output.png"));
         }
     }

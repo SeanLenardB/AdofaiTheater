@@ -16,15 +16,7 @@ namespace AdofaiTheater.Foundation.Basic
 
         public static bool operator ==(Vector2 left, Vector2 right) { return left.X == right.X && left.Y == right.Y; }
         public static bool operator !=(Vector2 left, Vector2 right) { return !(left == right); }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is Vector2 vector && this == vector;
-        }
-
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override bool Equals(object? obj) { return obj is not null && obj is Vector2 vector && this == vector; }
+        public override int GetHashCode() { return base.GetHashCode(); }
     }
 }

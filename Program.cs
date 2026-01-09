@@ -4,7 +4,7 @@ namespace AdofaiTheater
 {
     public class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             Theater mainTheater = new();
             mainTheater.Animate();

@@ -22,7 +22,7 @@ namespace AdofaiTheater.Foundation.Basic
         public Vector2 GlobalTranslation()
         {
             if (Parent is null) { return LocalTranslation; }
-            return Parent.GlobalTransformation() * Parent.GlobalTranslation() + LocalTranslation;
+            return (Parent.GlobalTransformation() * Parent.GlobalTranslation()) + LocalTranslation;
         }
         
         public Matrix2 GlobalTransformation()
