@@ -21,22 +21,39 @@ namespace AdofaiTheater.Foundation.Core
         private readonly List<TheaterElement> Elements = [];
         public void Animate()
         {
+            List<SKData> outputBuffer = [];
+
             using (SKSurface surface = SKSurface.Create(new SKImageInfo(this.Configuration.Width, this.Configuration.Height)))
             {
                 int frameNumber = 0;
                 do  // NOTE(seanlb): a do-while loop is necessary to ensure that one-frame theaters can be rendered.
                 {
                     frameNumber++;
-                    surface.Canvas.Clear();
                     foreach (var element in this.Elements.OrderBy(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
 
-                    using (SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality))
+                    outputBuffer.Add(surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality));
+                    if (outputBuffer.Count >= this.Configuration.OutputBatchSize)
                     {
-                        imageData.SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{frameNumber}.png")));
+                        this.WriteOutputBuffer(outputBuffer, frameNumber);
                     }
                 }
                 while (this.NextFrame());
+
+                if (outputBuffer.Count > 0)
+                {
+                    this.WriteOutputBuffer(outputBuffer, frameNumber);
+                }
             }
+
+        }
+        private void WriteOutputBuffer(List<SKData> outputBuffer, int lastFrame)
+        {
+            Parallel.For(0, outputBuffer.Count, i =>
+            {
+                outputBuffer[i].SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{lastFrame - i}.png")));
+            });
+            Parallel.ForEach(outputBuffer, buffer => buffer.Dispose());
+            outputBuffer.Clear();
         }
 
         public void AddElement(TheaterElement element)
@@ -54,6 +71,8 @@ namespace AdofaiTheater.Foundation.Core
         public int Height { get; set; } = 1080;
         // NOTE(seanlb): I have no idea what this is
         public int ImageQuality { get; set; } = 100;
+
+        public int OutputBatchSize { get; set; } = 8;
 
         /// <summary>
         /// Ends <strong>without</strong> slash.
