@@ -28,7 +28,7 @@ namespace AdofaiTheater.Foundation.Core
                 {
                     frameNumber++;
                     surface.Canvas.Clear();
-                    foreach (var element in this.Elements.OrderByDescending(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
+                    foreach (var element in this.Elements.OrderBy(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
 
                     using (SKData imageData = surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality))
                     {
