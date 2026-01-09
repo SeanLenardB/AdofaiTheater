@@ -37,6 +37,8 @@ namespace AdofaiTheater
             theater.Animate();
             stopwatch.Stop();   // theater rendering
 			Console.WriteLine($"Render time:        {stopwatch.Elapsed.TotalSeconds}s.");
+
+            // TODO(seanlb): implement ffmpeg step
         }
     }
 }
