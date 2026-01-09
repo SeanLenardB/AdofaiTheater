@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AdofaiTheater.Foundation.Basic;
 
 namespace AdofaiTheater.Foundation.Timeline
 {
@@ -29,12 +30,32 @@ namespace AdofaiTheater.Foundation.Timeline
 		}
 	}
 
-	// TODO(seanlb): Implement element movement.
-	public class TheaterElementMoveEvent : ITheaterEvent
+	// TODO(seanlb): implement easing animations.
+	/// <summary>
+	/// A parameterized animation event. The parameter is in range (0,1].
+	/// </summary>
+	public class TheaterElementParameterizedAnimation : ITheaterEvent
 	{
+		public TheaterElementParameterizedAnimation(int totalFrames, Action<double> parameterizedAction)
+		{
+			this.TotalFrames = totalFrames;
+			this.Action = parameterizedAction;
+		}
+
+		public int Frame { get; private set; } = 0;
+		public int TotalFrames { get; init; } = 1;
+
+		public Action<double> Action { get; set; } = (_) => { };
+
 		public bool NextFrame()
 		{
-			throw new NotImplementedException();
+			this.Frame++;
+			double parameter = (double)this.Frame / this.TotalFrames;
+			if (this.Frame >= this.TotalFrames) { parameter = 1.0; }  // NOTE(seanlb): This is to prevent precision loss
+
+			this.Action(parameter);
+
+			return this.Frame >= this.TotalFrames;
 		}
 	}
 }
