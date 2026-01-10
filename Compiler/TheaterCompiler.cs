@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.Versioning;
 using System.Speech.Synthesis;
 using System.Text;
@@ -75,6 +76,11 @@ namespace AdofaiTheater.Compiler
 			};
 
 			synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
+			// NOTE(seanlb): This is hardcoded which is bad. It will be changed for customizeable voices.
+			// Or I will just leave it here because I'm lazy.
+			var voices = synthesizer.GetInstalledVoices(CultureInfo.GetCultureInfo("zh-cn"));
+			synthesizer.SelectVoice(voices.First(voice => voice.VoiceInfo.Gender == VoiceGender.Male).VoiceInfo.Name);
+
 			synthesizer.Speak(builder);
 
 			return this;

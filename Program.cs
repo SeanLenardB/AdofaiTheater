@@ -27,7 +27,7 @@ namespace AdofaiTheater
             moveableImage.Transform.SetPivot(800, 200);
             compiler.AddElement("move", moveableImage);
 
-            compiler.AppendSpeech("Fuck you");
+            compiler.AppendSpeech("操你妈 a");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 moveableImage.Transform.Rotate(-t * 10);
