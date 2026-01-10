@@ -11,6 +11,7 @@ using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Timeline;
 using FFMpegCore;
 using FFMpegCore.Pipes;
+using NAudio.Wave;
 
 namespace AdofaiTheater.Compiler
 {
@@ -66,26 +67,30 @@ namespace AdofaiTheater.Compiler
             };
             this.Segments.Add(segment);
 
-            PromptBuilder builder = new(new("zh-CN"));
-            builder.AppendText(speech);
-            builder.AppendBookmark("_SPEECH_END_");
+            string speechSsml = $@"
+                <speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'>
+                    <voice name='Microsoft Kangkang'>
+                        <prosody pitch='-100%'>
+                            {speech}
+                        </prosody>
+                    </voice>
+                </speak>";
 
             using (SpeechSynthesizer synthesizer = new())
             {
-                synthesizer.SelectVoice("Microsoft Kangkang");
+                synthesizer.Volume = 100;
                 synthesizer.Rate = 5;
-
-                synthesizer.BookmarkReached += (o, e) =>
-                {
-                    if (e.Bookmark != "_SPEECH_END_") { return; }  // NOTE(seanlb): For safety.
-                    segment.SpeechDuration = e.AudioPosition;
-                };
-
                 synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
-
-                synthesizer.Speak(builder);
-
+                synthesizer.SpeakSsml(speechSsml);
             }
+
+            // NOTE(seanlb): the original bookmark is shit.
+            // I have to rely on other people's power to do the .wav length acquisition.
+            using (AudioFileReader reader = new(segment.SpeechFileLocation))
+            {
+                segment.SpeechDuration = reader.TotalTime;
+            }
+
             return this;
         }
 
@@ -109,9 +114,12 @@ namespace AdofaiTheater.Compiler
         public void Compile()
         {
             int segmentIndex = 0;
-            var frames = this.Theater.Animate(t =>
+            var frames = this.Theater.Animate(frame =>
             {
-                if (segmentIndex < this.Segments.Count && this.Segments[segmentIndex].BoundEvents.Count == 0) { segmentIndex++; }
+                if (this.Segments
+                        .Take(segmentIndex + 1)  // NOTE(seanlb): This is ok because we can take 1000 elements from an empty thing.
+                        .Sum(segment => (int)(segment.SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond)) <= frame)
+                { segmentIndex++; }
                 if (segmentIndex >= this.Segments.Count) { return false; }
 
                 // NOTE(seanlb): very good trick because the predicate will call the function once.
@@ -144,7 +152,10 @@ namespace AdofaiTheater.Compiler
                 ffmpegArguments.AddFileInput(
                     this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{i}.wav"),
                     true,
-                    options => options.WithDuration(this.Segments[i].SpeechDuration));
+                    options => options
+                        .WithFramerate(this.Theater.Configuration.FramesPerSecond)
+                        .Seek(TimeSpan.Zero)
+                        .WithDuration(this.Segments[i].SpeechDuration));
                 concatArgument += $"[{i + 1}:a]";
             }
             concatArgument += $"concat=n={this.Segments.Count}:v=0:a=1[speechconcat]";
@@ -155,6 +166,8 @@ namespace AdofaiTheater.Compiler
                 options => options
                     .ForceFormat("mp4")
                     .ForcePixelFormat("yuv420p")
+                    .WithAudioBitrate(128)
+                    .WithFramerate(this.Theater.Configuration.FramesPerSecond)
                     .WithCustomArgument($"-filter_complex \"{concatArgument}\"")
                     .WithCustomArgument("-map 0:v")
                     .WithCustomArgument("-map [speechconcat]")

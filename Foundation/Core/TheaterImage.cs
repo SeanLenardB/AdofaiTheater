@@ -19,7 +19,10 @@ namespace AdofaiTheater.Foundation.Core
             get; set
             {
                 this._ImageCache?.Dispose();
-                this._ImageCache = null;
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    this._ImageCache = SKImage.FromEncodedData(value);
+                }
                 field = value;
             }
         } = "";
@@ -30,8 +33,6 @@ namespace AdofaiTheater.Foundation.Core
 		private SKImage? _ImageCache = null;
         public override void Draw(SKCanvas canvas)
         {
-            this._ImageCache ??= SKImage.FromEncodedData(this.ImagePath);
-
             canvas.Save();
             canvas.Concat(this.Transform.TotalMatrix());
             canvas.DrawImage(this._ImageCache, SKPoint.Empty);
@@ -44,20 +45,26 @@ namespace AdofaiTheater.Foundation.Core
         public TheaterImage AsBackground(Theater theater, BackgroundScalingPolicy scalingPolicy)
         {
             this.Transform.Layer = -1000;
-            using (SKImage image = SKImage.FromEncodedData(this.ImagePath))
+            Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
+            double widthScaleMultiplier = (double)theater.Configuration.Width / this._ImageCache.Width;
+            double heightScaleMultiplier = (double)theater.Configuration.Height / this._ImageCache.Height;
+            double finalScaleMultiplier = scalingPolicy switch
             {
-                double widthScaleMultiplier = (double)theater.Configuration.Width / image.Width;
-                double heightScaleMultiplier = (double)theater.Configuration.Height / image.Height;
-                double finalScaleMultiplier = scalingPolicy switch
-                {
-                    BackgroundScalingPolicy.FILL_SCREEN => Math.Max(widthScaleMultiplier, heightScaleMultiplier),
-                    BackgroundScalingPolicy.FIT_ONE_AXIS => Math.Min(widthScaleMultiplier, heightScaleMultiplier),
-                    _ => throw new Exception("Unknown scaling policy!")
-                };
-				this.Transform.Matrix = SKMatrix.CreateScale((float)finalScaleMultiplier, (float)finalScaleMultiplier);
-			}
+                BackgroundScalingPolicy.FILL_SCREEN => Math.Max(widthScaleMultiplier, heightScaleMultiplier),
+                BackgroundScalingPolicy.FIT_ONE_AXIS => Math.Min(widthScaleMultiplier, heightScaleMultiplier),
+                _ => throw new Exception("Unknown scaling policy!")
+            };
+            this.Transform.Matrix = SKMatrix.CreateScale((float)finalScaleMultiplier, (float)finalScaleMultiplier);
             return this;
         }
+
+        public TheaterImage PivotAtCenter()
+        {
+            Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
+            this.Transform.SetPivot(this._ImageCache.Width, this._ImageCache.Height);
+            return this;
+        }
+
         public enum BackgroundScalingPolicy { FILL_SCREEN, FIT_ONE_AXIS }
     }
 }

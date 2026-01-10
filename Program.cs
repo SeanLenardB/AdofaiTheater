@@ -12,6 +12,8 @@ namespace AdofaiTheater
     {
         private static void Main()
         {
+            // TODO(seanlb): The transform system is a little bit broken. Remember to fix it before moving on.
+
             TheaterCompiler compiler = new();
 
             Stopwatch stopwatch = new();
@@ -20,23 +22,33 @@ namespace AdofaiTheater
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.AddElement("bg",
                 new TheaterImage()
-                { ImagePath = @"Resources/ori.png" }
+                { ImagePath = @"Resources/adventbg.png" }
                 .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
 
-            TheaterImage moveableImage = new() { ImagePath = @"Resources/quartrond.png" };
-            moveableImage.Transform.SetPivot(800, 200);
+            TheaterImage moveableImage = new() { ImagePath = @"Resources/twirl.png" };
+            moveableImage.PivotAtCenter();
+            moveableImage.Transform.Move(-100, 0);
             compiler.AddElement("move", moveableImage);
 
-            compiler.AppendSpeech("cnm, zhao ming yu");
+            compiler.AppendSpeech("Hi!");
+
+            compiler.AppendSpeech("This is a video synthesized through programming.");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Rotate(-t * 3);
+                moveableImage.Transform.Move(10, t * t * 20);
             }));
 
-            compiler.AppendSpeech("你是真没见过黑手啊，敢不敢跟我比划比划！");
+            compiler.AppendSpeech("It's my side project and it's very poorly written.");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Move(3, t * t * 100);
+                moveableImage.Transform.Rotate(50 - (50 * t * t * t));
+            }));
+
+            compiler.AppendSpeech("I'm just experimenting with f f m peg.");
+            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            {
+                moveableImage.Transform.Scale(0.98, 0.98);
+                moveableImage.Transform.Move(t * t * t * t * t * 400, 0);
             }));
 
             stopwatch.Stop();     // element instantiation
