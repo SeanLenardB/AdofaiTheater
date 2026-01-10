@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AdofaiTheater.Compiler;
 using AdofaiTheater.Foundation.Basic;
@@ -15,7 +16,7 @@ namespace AdofaiTheater
             TheaterCompiler compiler = new();
 
             Stopwatch stopwatch = new();
-            stopwatch.Start();  // element instantiation
+            stopwatch.Start();    // element instantiation
 
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.AddElement("bg",
@@ -39,15 +40,13 @@ namespace AdofaiTheater
                 moveableImage.Transform.Move(20, -t * 30);
             }));
 
-            stopwatch.Stop();   // element instantiation
+            stopwatch.Stop();     // element instantiation
             Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
 
-            stopwatch.Start();  // theater rendering
+            stopwatch.Restart();  // theater rendering
             compiler.Compile();
-            stopwatch.Stop();   // theater rendering
+            stopwatch.Stop();     // theater rendering
             Console.WriteLine($"Render:        {stopwatch.Elapsed.TotalSeconds}s.");
-
-            // TODO(seanlb): implement ffmpeg step
         }
     }
 }

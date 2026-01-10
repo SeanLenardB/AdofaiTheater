@@ -119,6 +119,23 @@ namespace AdofaiTheater.Compiler
 
                 return true;
             });
+
+            Debug.Assert(File.Exists(@"Resources\ffmpeg.exe"), "ffmpeg.exe should exist under the Resources folder.");
+            new Process()
+            {
+                StartInfo = new()
+                {
+                    FileName = @"Resources\ffmpeg.exe",
+                    Arguments =
+                        $"-r {this.Theater.Configuration.FramesPerSecond} " +
+                        $"-i {this.Theater.Configuration.ConcatenatePath("Output_Frame_%d.png")} " +
+                        $"-i {this.Theater.Configuration.ConcatenatePath("Output_Audio_Segment_%d.png")} " +
+                        $"-vcodec libx264 " +
+                        $"-crf 25 " +
+                        $"{this.Theater.Configuration.ConcatenatePath("Final.mp4")}",
+                    CreateNoWindow = false
+                }
+            }.Start();
         }
     }
 
