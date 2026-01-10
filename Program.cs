@@ -30,21 +30,21 @@ namespace AdofaiTheater
             moveableImage.Transform.Move(-100, 0);
             compiler.AddElement("move", moveableImage);
 
-            compiler.AppendSpeech("Hi!");
+            compiler.AppendSpeech("你的脸");
 
-            compiler.AppendSpeech("This is a video synthesized through programming.");
+            compiler.AppendSpeech("怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 moveableImage.Transform.Move(10, t * t * 20);
             }));
 
-            compiler.AppendSpeech("It's my side project and it's very poorly written.");
+            compiler.AppendSpeech("你的脸，怎么又黄了？");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 moveableImage.Transform.Rotate(50 - (50 * t * t * t));
             }));
 
-            compiler.AppendSpeech("I'm just experimenting with f f m peg.");
+            compiler.AppendSpeech("我操你妈！我脸黄不黄跟你有关系吗");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 moveableImage.Transform.Scale(0.98, 0.98);
