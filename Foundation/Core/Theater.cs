@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Timeline;
+using FFMpegCore.Pipes;
 using SkiaSharp;
 
 namespace AdofaiTheater.Foundation.Core
@@ -27,43 +28,28 @@ namespace AdofaiTheater.Foundation.Core
         private readonly List<TheaterElement> Elements = [];
         /// <summary>
         /// Animates and renders the scene.
+        /// <br/><br/>
+        /// See <see cref="https://swharden.com/csdv/skiasharp/video/"/> for more information
         /// </summary>
         /// <param name="onFrameEnd">returns <c>true</c> if the theater isn't done. <c>false</c> otherwise. The parameter <c>int</c> is the frame index (first frame is 1).</param>
-        public void Animate(Predicate<int> onFrameEnd)
+        public IEnumerable<IVideoFrame> Animate(Predicate<int> onFrameEnd)
         {
-            List<SKData> outputBuffer = [];
-
-            using (SKSurface surface = SKSurface.Create(new SKImageInfo(this.Configuration.Width, this.Configuration.Height)))
+            using (SKBitmap bitmap = new(this.Configuration.Width, this.Configuration.Height))
             {
-                int frameNumber = 0;
-                do  // NOTE(seanlb): a do-while loop is necessary to ensure that one-frame theaters can be rendered.
+                using (SKCanvas canvas = new(bitmap))
                 {
-                    frameNumber++;
-                    foreach (var element in this.Elements.OrderBy(e => e.Transform.Layer)) { element.Draw(surface.Canvas); }
-
-                    outputBuffer.Add(surface.Snapshot().Encode(SKEncodedImageFormat.Png, this.Configuration.ImageQuality));
-                    if (outputBuffer.Count >= this.Configuration.OutputBatchSize)
+                    int frameNumber = 0;
+                    do  // NOTE(seanlb): a do-while loop is necessary to ensure that one-frame theaters can be rendered.
                     {
-                        this.WriteOutputBuffer(outputBuffer, frameNumber);
-                    }
-                }
-                while (onFrameEnd(frameNumber));
+                        canvas.Clear();
+                        frameNumber++;
+                        foreach (var element in this.Elements.OrderBy(e => e.Transform.Layer)) { element.Draw(canvas); }
 
-                if (outputBuffer.Count > 0)
-                {
-                    this.WriteOutputBuffer(outputBuffer, frameNumber);
+                        yield return new SKBitmapFrame(bitmap);
+                    }
+                    while (onFrameEnd(frameNumber));
                 }
             }
-
-        }
-        private void WriteOutputBuffer(List<SKData> outputBuffer, int lastFrame)
-        {
-            Parallel.For(0, outputBuffer.Count, i =>
-            {
-                outputBuffer[i].SaveTo(File.OpenWrite(this.Configuration.ConcatenatePath($"Output_Frame_{lastFrame - outputBuffer.Count + i + 1}.png")));
-            });
-            Parallel.ForEach(outputBuffer, buffer => buffer.Dispose());
-            outputBuffer.Clear();
         }
 
         public void AddElement(TheaterElement element)
@@ -84,8 +70,6 @@ namespace AdofaiTheater.Foundation.Core
 
         public int FramesPerSecond { get; set; } = 30;
 
-        public int OutputBatchSize { get; set; } = 8;
-
         /// <summary>
         /// Ends <strong>WITHOUT</strong> slash.
         /// </summary>
@@ -103,8 +87,7 @@ namespace AdofaiTheater.Foundation.Core
         } = "";
         public string ConcatenatePath(string fileName)
         {
-            if (this.OutputPath.Length == 0) { return fileName; }
-            return this.OutputPath + '/' + fileName;
+            return Path.Combine(Directory.GetCurrentDirectory(), this.OutputPath, fileName);
         }
 
     }

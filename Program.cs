@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AdofaiTheater.Compiler;
-using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Timeline;
 
@@ -34,7 +33,7 @@ namespace AdofaiTheater
                 moveableImage.Transform.Rotate(-t * 10);
             }));
 
-            compiler.AppendSpeech("黑手");
+            compiler.AppendSpeech("你是真没见过黑手啊");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 moveableImage.Transform.Move(20, -t * 30);

@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Timeline;
+using FFMpegCore;
+using FFMpegCore.Pipes;
 
 namespace AdofaiTheater.Compiler
 {
@@ -60,7 +62,7 @@ namespace AdofaiTheater.Compiler
         {
             TheaterSpeechSegment segment = new()
             {
-                SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count + 1}.wav")
+                SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav")
             };
             this.Segments.Enqueue(segment);
 
@@ -106,8 +108,9 @@ namespace AdofaiTheater.Compiler
 
         public void Compile()
         {
+            int segmentCount = this.Segments.Count;
             TheaterSpeechSegment? currentSegment = null;
-            this.Theater.Animate(t =>
+            var frames = this.Theater.Animate(t =>
             {
                 if (currentSegment is not null && currentSegment.BoundEvents.Count == 0) { currentSegment = null; }
                 if (this.Segments.Count == 0 && currentSegment is null) { return false; }
@@ -120,22 +123,46 @@ namespace AdofaiTheater.Compiler
                 return true;
             });
 
-            Debug.Assert(File.Exists(@"Resources\ffmpeg.exe"), "ffmpeg.exe should exist under the Resources folder.");
-            new Process()
+            Debug.Assert(File.Exists(@"Resources\ffmpeg.exe"), "ffmpeg should be placed under Resources folder.");
+            GlobalFFOptions.Configure(options =>
             {
-                StartInfo = new()
-                {
-                    FileName = @"Resources\ffmpeg.exe",
-                    Arguments =
-                        $"-r {this.Theater.Configuration.FramesPerSecond} " +
-                        $"-i {this.Theater.Configuration.ConcatenatePath("Output_Frame_%d.png")} " +
-                        $"-i {this.Theater.Configuration.ConcatenatePath("Output_Audio_Segment_%d.png")} " +
-                        $"-vcodec libx264 " +
-                        $"-crf 25 " +
-                        $"{this.Theater.Configuration.ConcatenatePath("Final.mp4")}",
-                    CreateNoWindow = false
-                }
-            }.Start();
+                options.BinaryFolder = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
+                options.WorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), this.Theater.Configuration.OutputPath);
+            });
+
+
+            RawVideoPipeSource videoSource = new(frames) { FrameRate = this.Theater.Configuration.FramesPerSecond };
+            FFMpegArguments ffmpegArguments = FFMpegArguments.FromPipeInput(videoSource);
+
+            // NOTE(seanlb): audio inputs must be added in a loop. Writing a custom pipesource requires parsing .wav files.
+            // Also, ffmpeg will only insert the first audio track. To concatenate them, here's some very shit code to do it.
+            //
+            // Don't worry if you can't understand this. The string we want to achieve is:
+            // -filter_complex '[1:0][2:0][3:0]...concat=n=...:v=0:a=1[speechconcat]'               (cli argument)
+            // https://trac.ffmpeg.org/wiki/Concatenate
+            // 
+            // The result is our juicy audio will be ready inside speechconcat pipe.
+            string concatArgument = "";
+            for (int i = 0; i < segmentCount; i++)
+            {
+                ffmpegArguments.AddFileInput(this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{i}.wav"));
+                concatArgument += $"[{i + 1}:a]";
+            }
+            concatArgument += $"concat=n={segmentCount}:v=0:a=1[speechconcat]";
+
+            bool success = ffmpegArguments
+                .OutputToFile(
+                "Final.mp4", true,
+                options => options
+                    .ForceFormat("mp4")
+                    .ForcePixelFormat("yuv420p")
+                    .WithCustomArgument($"-filter_complex \"{concatArgument}\"")
+                    .WithCustomArgument($"-map 0:v")
+                    .WithCustomArgument($"-map [speechconcat]")
+                    .WithVideoCodec("libx264")
+                    .WithAudioCodec("aac"))
+                .ProcessSynchronously();
+            Debug.Assert(success, "FFmpeg muxing failed!");
         }
     }
 
