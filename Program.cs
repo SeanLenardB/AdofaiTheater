@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Versioning;
 using AdofaiTheater.Compiler;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
@@ -6,6 +7,7 @@ using AdofaiTheater.Foundation.Timeline;
 
 namespace AdofaiTheater
 {
+    [SupportedOSPlatform("windows")]
     public class Program
     {
         private static void Main()
@@ -24,6 +26,12 @@ namespace AdofaiTheater
 			TheaterImage moveableImage = new() { ImagePath = @"Resources/quartrond.png" };
             moveableImage.Transform.SetPivot(800, 200);
             compiler.AddElement("move", moveableImage);
+
+            compiler.AppendSpeech("Fuck you");
+            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            {
+                moveableImage.Transform.Rotate(t);
+            }));
 
             stopwatch.Stop();   // element instantiation
 			Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");

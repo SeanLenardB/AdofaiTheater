@@ -9,11 +9,15 @@ namespace AdofaiTheater.Foundation.Timeline
 	/// <summary>
 	/// A parameterized animation event. The parameter is in range (0,1].
 	/// </summary>
-	public class TheaterElementParameterizedAnimation : ITheaterEvent
+	public class TheaterElementParameterizedAnimation : ITheaterAdjustableDurationEvent
 	{
 		public TheaterElementParameterizedAnimation(int totalFrames, Action<double> parameterizedAction)
 		{
 			this.TotalFrames = totalFrames;
+			this.Action = parameterizedAction;
+		}
+		public TheaterElementParameterizedAnimation(Action<double> parameterizedAction)
+		{
 			this.Action = parameterizedAction;
 		}
 
