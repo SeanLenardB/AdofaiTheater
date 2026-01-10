@@ -5,15 +5,6 @@ using AdofaiTheater.Foundation.Basic;
 
 namespace AdofaiTheater.Foundation.Timeline
 {
-	// TODO(seanlb): Implement character speech.
-	public class TheaterCharacterSpeakEvent : ITheaterEvent
-	{
-		public bool NextFrame()
-		{
-			throw new NotImplementedException();
-		}
-	}
-
 	// TODO(seanlb): implement easing animations.
 	/// <summary>
 	/// A parameterized animation event. The parameter is in range (0,1].
