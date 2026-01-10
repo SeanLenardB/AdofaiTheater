@@ -52,15 +52,15 @@ namespace AdofaiTheater.Compiler
 		// 2. this.AttachEvent(...);
 		// 3. repeat the steps until the theater is done.
 		// 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
-		private List<TheaterSpeechSegment> Segments { get; set; } = [];
+		private Queue<TheaterSpeechSegment> Segments { get; set; } = [];
 		[SupportedOSPlatform("windows")]
 		public TheaterCompiler AppendSpeech(string speech)
 		{
 			TheaterSpeechSegment segment = new()
 			{
-				SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav")
+				SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count + 1}.wav")
 			};
-			this.Segments.Add(segment);
+			this.Segments.Enqueue(segment);
 			
 
 			PromptBuilder builder = new();
@@ -71,7 +71,7 @@ namespace AdofaiTheater.Compiler
 			synthesizer.BookmarkReached += (o, e) =>
 			{
 				if (e.Bookmark != "_SPEECH_END_") { return; }  // NOTE(seanlb): For safety.
-				segment.SpeechDuration = e.AudioPosition;
+				segment.SpeechDurationFrames = (int)(e.AudioPosition.TotalSeconds * this.Theater.Configuration.FramesPerSecond);
 			};
 
 			synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
@@ -90,15 +90,34 @@ namespace AdofaiTheater.Compiler
 		public TheaterCompiler AttachEventAutoDuration(ITheaterAdjustableDurationEvent theaterEvent)
 		{
 			Debug.Assert(this.Segments.Count > 0, "You need to append a speech before attaching events!");
-			theaterEvent.SetTotalFrames((int)(this.Segments.Last().SpeechDuration.TotalSeconds * this.Theater.Configuration.FramePerSecond));
+			theaterEvent.SetTotalFrames(this.Segments.Last().SpeechDurationFrames);
 			this.Segments.Last().BoundEvents.Add(theaterEvent);
 			return this;
+		}
+
+
+
+		public void Compile()
+		{
+			TheaterSpeechSegment? currentSegment = null;
+			this.Theater.Animate(t =>
+			{
+				if (currentSegment is not null && currentSegment.BoundEvents.Count == 0) { currentSegment = null; }
+				if (this.Segments.Count == 0 && currentSegment is null) { return false; }
+
+				currentSegment ??= this.Segments.Dequeue();
+
+				// NOTE(seanlb): very good trick because the predicate will call the function once.
+				currentSegment.BoundEvents.RemoveAll(e => !e.NextFrame());
+
+				return true;
+			});
 		}
 	}
 
 	public class TheaterSpeechSegment
 	{
-		public TimeSpan SpeechDuration { get; set; } = TimeSpan.Zero;
+		public int SpeechDurationFrames { get; set; } = 0;
 		public string SpeechFileLocation { get; set; } = "";
 
 		public List<ITheaterEvent> BoundEvents { get; set; } = [];

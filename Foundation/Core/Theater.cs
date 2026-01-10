@@ -25,7 +25,11 @@ namespace AdofaiTheater.Foundation.Core
 
 
         private readonly List<TheaterElement> Elements = [];
-        public void Animate()
+        /// <summary>
+        /// Animates and renders the scene.
+        /// </summary>
+        /// <param name="onFrameEnd">returns <c>true</c> if the theater isn't done. <c>false</c> otherwise. The parameter <c>int</c> is the frame index (first frame is 1).</param>
+        public void Animate(Predicate<int> onFrameEnd)
         {
             List<SKData> outputBuffer = [];
 
@@ -43,7 +47,7 @@ namespace AdofaiTheater.Foundation.Core
                         this.WriteOutputBuffer(outputBuffer, frameNumber);
                     }
                 }
-                while (this.NextFrame());
+                while (onFrameEnd(frameNumber));
 
                 if (outputBuffer.Count > 0)
                 {
@@ -78,7 +82,7 @@ namespace AdofaiTheater.Foundation.Core
         // NOTE(seanlb): I have no idea what this is
         public int ImageQuality { get; set; } = 100;
 
-        public int FramePerSecond { get; set; } = 30;
+        public int FramesPerSecond { get; set; } = 30;
 
         public int OutputBatchSize { get; set; } = 8;
 

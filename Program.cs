@@ -30,14 +30,20 @@ namespace AdofaiTheater
             compiler.AppendSpeech("Fuck you");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Rotate(t);
+                moveableImage.Transform.Rotate(-t * 10);
+            }));
+
+            compiler.AppendSpeech("黑手");
+            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            {
+                moveableImage.Transform.Move(20, t * 30);
             }));
 
             stopwatch.Stop();   // element instantiation
 			Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
 
             stopwatch.Start();  // theater rendering
-            compiler.Theater.Animate();
+            compiler.Compile();
             stopwatch.Stop();   // theater rendering
 			Console.WriteLine($"Render:        {stopwatch.Elapsed.TotalSeconds}s.");
 
