@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AdofaiTheater.Compiler;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Timeline;
@@ -9,32 +10,28 @@ namespace AdofaiTheater
     {
         private static void Main()
         {
+            TheaterCompiler compiler = new();
+
             Stopwatch stopwatch = new();
             stopwatch.Start();  // element instantiation
 
-            Theater theater = new();
-            theater.Configuration.OutputPath = "output";
-            theater.AddElement(
+            compiler.Theater.Configuration.OutputPath = "output";
+            compiler.AddElement("bg",
                 new TheaterImage()
                 { ImagePath = @"Resources/ori.png" }
-                .AsBackground(theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
+                .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
+
 			TheaterImage moveableImage = new() { ImagePath = @"Resources/quartrond.png" };
             moveableImage.Transform.SetPivot(800, 200);
-            theater.AddElement(moveableImage);
-
-            theater.PushEvent(new TheaterElementParameterizedAnimation(20, 
-                _ =>
-                {
-                    moveableImage.Transform.Rotate(-8);
-                }));
+            compiler.AddElement("move", moveableImage);
 
             stopwatch.Stop();   // element instantiation
-			Console.WriteLine($"Instantiation time: {stopwatch.Elapsed.TotalSeconds}s.");
+			Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
 
             stopwatch.Start();  // theater rendering
-            theater.Animate();
+            compiler.Theater.Animate();
             stopwatch.Stop();   // theater rendering
-			Console.WriteLine($"Render time:        {stopwatch.Elapsed.TotalSeconds}s.");
+			Console.WriteLine($"Render:        {stopwatch.Elapsed.TotalSeconds}s.");
 
             // TODO(seanlb): implement ffmpeg step
         }

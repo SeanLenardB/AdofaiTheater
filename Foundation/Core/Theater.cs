@@ -7,6 +7,12 @@ namespace AdofaiTheater.Foundation.Core
 {
     // NOTE(seanlb): This part only contains the necessary part of the animation of the theater.
     // Movement, Speaking and other events are done in Theater.Timeline.cs
+    /// <summary>
+    /// If you are very experienced with the framework <b>and</b> if you want more flexibility with the animation,
+    /// then you should consider directly using this class.
+    /// <br/><br/>
+    /// For easier management, use <see cref="AdofaiTheater.Compiler.TheaterCompiler"/> instead.
+    /// </summary>
     public partial class Theater
     {
         public Theater() { }
