@@ -78,10 +78,12 @@ namespace AdofaiTheater.Foundation.Core
         // NOTE(seanlb): I have no idea what this is
         public int ImageQuality { get; set; } = 100;
 
+        public int FramePerSecond { get; set; } = 30;
+
         public int OutputBatchSize { get; set; } = 8;
 
         /// <summary>
-        /// Ends <strong>without</strong> slash.
+        /// Ends <strong>WITHOUT</strong> slash.
         /// </summary>
         public string OutputPath
         {

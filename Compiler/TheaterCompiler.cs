@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Versioning;
+using System.Speech.Synthesis;
 using System.Text;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
+using AdofaiTheater.Foundation.Timeline;
 
 namespace AdofaiTheater.Compiler
 {
-	public class TheaterCompiler
+    // TODO(seanlb): implement the script compiler
+    public class TheaterCompiler
 	{
 		public Theater Theater { get; private set; } = new();
 
@@ -48,15 +52,55 @@ namespace AdofaiTheater.Compiler
 		// 2. this.AttachEvent(...);
 		// 3. repeat the steps until the theater is done.
 		// 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
-
+		private List<TheaterSpeechSegment> Segments { get; set; } = [];
+		[SupportedOSPlatform("windows")]
 		public TheaterCompiler AppendSpeech(string speech)
 		{
-			// TODO(seanlb): implement speech.
+			TheaterSpeechSegment segment = new()
+			{
+				SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav")
+			};
+			this.Segments.Add(segment);
+			
+
+			PromptBuilder builder = new();
+			builder.AppendText(speech);
+			builder.AppendBookmark("_SPEECH_END_");
+
+			SpeechSynthesizer synthesizer = new();
+			synthesizer.BookmarkReached += (o, e) =>
+			{
+				if (e.Bookmark != "_SPEECH_END_") { return; }  // NOTE(seanlb): For safety.
+				segment.SpeechDuration = e.AudioPosition;
+			};
+
+			synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
+			synthesizer.Speak(builder);
 
 			return this;
 		}
 
-		// TODO(seanlb): implement the script compiler
-		public TheaterCompiler AppendScript() { return this; }
+		public TheaterCompiler AttachEvent(ITheaterEvent theaterEvent)
+		{
+			Debug.Assert(this.Segments.Count > 0, "You need to append a speech before attaching events!");
+			this.Segments.Last().BoundEvents.Add(theaterEvent);
+			return this;
+		}
+
+		public TheaterCompiler AttachEventAutoDuration(ITheaterAdjustableDurationEvent theaterEvent)
+		{
+			Debug.Assert(this.Segments.Count > 0, "You need to append a speech before attaching events!");
+			theaterEvent.SetTotalFrames((int)(this.Segments.Last().SpeechDuration.TotalSeconds * this.Theater.Configuration.FramePerSecond));
+			this.Segments.Last().BoundEvents.Add(theaterEvent);
+			return this;
+		}
+	}
+
+	public class TheaterSpeechSegment
+	{
+		public TimeSpan SpeechDuration { get; set; } = TimeSpan.Zero;
+		public string SpeechFileLocation { get; set; } = "";
+
+		public List<ITheaterEvent> BoundEvents { get; set; } = [];
 	}
 }

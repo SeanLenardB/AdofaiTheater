@@ -18,7 +18,7 @@ namespace AdofaiTheater.Foundation.Timeline
 		}
 
 		public int Frame { get; private set; } = 0;
-		public int TotalFrames { get; init; } = 1;
+		public int TotalFrames { get; private set; } = 1;
 
 		public Action<double> Action { get; set; } = (_) => { };
 
@@ -32,5 +32,7 @@ namespace AdofaiTheater.Foundation.Timeline
 
 			return this.Frame < this.TotalFrames;
 		}
+
+		public void SetTotalFrames(int frames) { this.TotalFrames = frames; }
 	}
 }

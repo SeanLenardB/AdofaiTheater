@@ -11,5 +11,10 @@ namespace AdofaiTheater.Foundation.Timeline
 		/// </summary>
 		/// <returns><see cref="NextFrame">true</see> if the event isn't done. <see cref="NextFrame">false</see> otherwise.</returns>
 		public bool NextFrame();
+    }
+
+    public interface ITheaterAdjustableDurationEvent : ITheaterEvent
+    {
+        public void SetTotalFrames(int frames);
 	}
 }
