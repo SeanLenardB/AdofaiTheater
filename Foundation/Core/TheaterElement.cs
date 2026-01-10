@@ -1,10 +1,11 @@
-﻿using SkiaSharp;
+﻿using AdofaiTheater.Foundation.Basic;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace AdofaiTheater.Foundation.Basic
+namespace AdofaiTheater.Foundation.Core
 {
     // NOTE(seanlb): These two classes might not end up being abstract.
     // I'm making them abstract because this forces me to implement some useful classes.

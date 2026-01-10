@@ -1,12 +1,11 @@
-﻿using AdofaiTheater.Foundation.Core;
-using SkiaSharp;
+﻿using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Text;
 
-namespace AdofaiTheater.Foundation.Basic
+namespace AdofaiTheater.Foundation.Core
 {
     public class TheaterImage : TheaterElement
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using AdofaiTheater.Foundation.Timeline;
 
-namespace AdofaiTheater.Foundation.Basic
+namespace AdofaiTheater.Foundation.Core
 {
     public interface ITheaterHumanoidCharacter
     {
