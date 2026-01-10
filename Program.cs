@@ -36,7 +36,7 @@ namespace AdofaiTheater
             compiler.AppendSpeech("你是真没见过黑手啊，敢不敢跟我比划比划！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Move(3, t * 50);
+                moveableImage.Transform.Move(3, t * t * 100);
             }));
 
             stopwatch.Stop();     // element instantiation
