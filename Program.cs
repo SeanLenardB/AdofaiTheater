@@ -23,11 +23,11 @@ namespace AdofaiTheater
                 { ImagePath = @"Resources/ori.png" }
                 .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
 
-			TheaterImage moveableImage = new() { ImagePath = @"Resources/quartrond.png" };
+            TheaterImage moveableImage = new() { ImagePath = @"Resources/quartrond.png" };
             moveableImage.Transform.SetPivot(800, 200);
             compiler.AddElement("move", moveableImage);
 
-            compiler.AppendSpeech("操你妈 a");
+            compiler.AppendSpeech("操");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 moveableImage.Transform.Rotate(-t * 10);
@@ -36,16 +36,16 @@ namespace AdofaiTheater
             compiler.AppendSpeech("黑手");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Move(20, t * 30);
+                moveableImage.Transform.Move(20, -t * 30);
             }));
 
             stopwatch.Stop();   // element instantiation
-			Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
+            Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
 
             stopwatch.Start();  // theater rendering
             compiler.Compile();
             stopwatch.Stop();   // theater rendering
-			Console.WriteLine($"Render:        {stopwatch.Elapsed.TotalSeconds}s.");
+            Console.WriteLine($"Render:        {stopwatch.Elapsed.TotalSeconds}s.");
 
             // TODO(seanlb): implement ffmpeg step
         }
