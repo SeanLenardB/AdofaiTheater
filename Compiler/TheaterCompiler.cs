@@ -56,7 +56,7 @@ namespace AdofaiTheater.Compiler
         // 2. this.AttachEvent(...);
         // 3. repeat the steps until the theater is done.
         // 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
-        private Queue<TheaterSpeechSegment> Segments { get; set; } = [];
+        private List<TheaterSpeechSegment> Segments { get; set; } = [];
         [SupportedOSPlatform("windows")]
         public TheaterCompiler AppendSpeech(string speech)
         {
@@ -64,7 +64,7 @@ namespace AdofaiTheater.Compiler
             {
                 SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav")
             };
-            this.Segments.Enqueue(segment);
+            this.Segments.Add(segment);
 
             PromptBuilder builder = new(new("zh-CN"));
             builder.AppendText(speech);
@@ -78,7 +78,7 @@ namespace AdofaiTheater.Compiler
                 synthesizer.BookmarkReached += (o, e) =>
                 {
                     if (e.Bookmark != "_SPEECH_END_") { return; }  // NOTE(seanlb): For safety.
-                    segment.SpeechDurationFrames = (int)(e.AudioPosition.TotalSeconds * this.Theater.Configuration.FramesPerSecond);
+                    segment.SpeechDuration = e.AudioPosition;
                 };
 
                 synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
@@ -99,7 +99,7 @@ namespace AdofaiTheater.Compiler
         public TheaterCompiler AttachEventAutoDuration(ITheaterAdjustableDurationEvent theaterEvent)
         {
             Debug.Assert(this.Segments.Count > 0, "You need to append a speech before attaching events!");
-            theaterEvent.SetTotalFrames(this.Segments.Last().SpeechDurationFrames);
+            theaterEvent.SetTotalFrames((int)(this.Segments.Last().SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond));
             this.Segments.Last().BoundEvents.Add(theaterEvent);
             return this;
         }
@@ -108,18 +108,14 @@ namespace AdofaiTheater.Compiler
 
         public void Compile()
         {
-            int segmentCount = this.Segments.Count;
-            TheaterSpeechSegment? currentSegment = null;
+            int segmentIndex = 0;
             var frames = this.Theater.Animate(t =>
             {
-                if (currentSegment is not null && currentSegment.BoundEvents.Count == 0) { currentSegment = null; }
-                if (this.Segments.Count == 0 && currentSegment is null) { return false; }
-
-                currentSegment ??= this.Segments.Dequeue();
+                if (segmentIndex < this.Segments.Count && this.Segments[segmentIndex].BoundEvents.Count == 0) { segmentIndex++; }
+                if (segmentIndex >= this.Segments.Count) { return false; }
 
                 // NOTE(seanlb): very good trick because the predicate will call the function once.
-                currentSegment.BoundEvents.RemoveAll(e => !e.NextFrame());
-
+                this.Segments[segmentIndex].BoundEvents.RemoveAll(e => !e.NextFrame());
                 return true;
             });
 
@@ -143,12 +139,15 @@ namespace AdofaiTheater.Compiler
             // 
             // The result is our juicy audio will be ready inside speechconcat pipe.
             string concatArgument = "";
-            for (int i = 0; i < segmentCount; i++)
+            for (int i = 0; i < this.Segments.Count; i++)
             {
-                ffmpegArguments.AddFileInput(this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{i}.wav"));
+                ffmpegArguments.AddFileInput(
+                    this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{i}.wav"),
+                    true,
+                    options => options.WithDuration(this.Segments[i].SpeechDuration));
                 concatArgument += $"[{i + 1}:a]";
             }
-            concatArgument += $"concat=n={segmentCount}:v=0:a=1[speechconcat]";
+            concatArgument += $"concat=n={this.Segments.Count}:v=0:a=1[speechconcat]";
 
             bool success = ffmpegArguments
                 .OutputToFile(
@@ -157,8 +156,9 @@ namespace AdofaiTheater.Compiler
                     .ForceFormat("mp4")
                     .ForcePixelFormat("yuv420p")
                     .WithCustomArgument($"-filter_complex \"{concatArgument}\"")
-                    .WithCustomArgument($"-map 0:v")
-                    .WithCustomArgument($"-map [speechconcat]")
+                    .WithCustomArgument("-map 0:v")
+                    .WithCustomArgument("-map [speechconcat]")
+                    .WithCustomArgument("-movflags +faststart")
                     .WithVideoCodec("libx264")
                     .WithAudioCodec("aac"))
                 .ProcessSynchronously();
@@ -168,7 +168,7 @@ namespace AdofaiTheater.Compiler
 
     public class TheaterSpeechSegment
     {
-        public int SpeechDurationFrames { get; set; } = 0;
+        public TimeSpan SpeechDuration { get; set; } = TimeSpan.Zero;
         public string SpeechFileLocation { get; set; } = "";
 
         public List<ITheaterEvent> BoundEvents { get; set; } = [];

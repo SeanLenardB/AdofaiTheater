@@ -27,16 +27,16 @@ namespace AdofaiTheater
             moveableImage.Transform.SetPivot(800, 200);
             compiler.AddElement("move", moveableImage);
 
-            compiler.AppendSpeech("操");
+            compiler.AppendSpeech("cnm, zhao ming yu");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Rotate(-t * 10);
+                moveableImage.Transform.Rotate(-t * 3);
             }));
 
-            compiler.AppendSpeech("你是真没见过黑手啊");
+            compiler.AppendSpeech("你是真没见过黑手啊，敢不敢跟我比划比划！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.Move(20, -t * 30);
+                moveableImage.Transform.Move(3, t * 50);
             }));
 
             stopwatch.Stop();     // element instantiation
