@@ -44,7 +44,7 @@ namespace AdofaiTheater.Foundation.Core
         /// </summary>
         public TheaterImage AsBackground(Theater theater, BackgroundScalingPolicy scalingPolicy)
         {
-            this.Transform.Layer = -1000;
+            this.Transform.Layer = 1000;
             Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
             double widthScaleMultiplier = (double)theater.Configuration.Width / this._ImageCache.Width;
             double heightScaleMultiplier = (double)theater.Configuration.Height / this._ImageCache.Height;
