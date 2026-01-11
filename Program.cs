@@ -26,7 +26,6 @@ namespace AdofaiTheater
 
             TheaterImage imageTrack = new() { ImagePath = @"Resources/adofaitrack.png" };
             imageTrack.PivotAtCenter();
-            imageTrack.Transform.PositionAdd(100, 50);
             compiler.AddElement("move", imageTrack);
 
             TheaterImage imageOneattempt = new() { ImagePath = @"Resources/oneattempt.png" };
@@ -37,7 +36,7 @@ namespace AdofaiTheater
             compiler.AppendSpeech("你的脸怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                imageTrack.Transform.PositionSet(100 + (1500 * t), 50);
+                imageTrack.Transform.PositionSet(100 + (1500 * t), 300 * t);
                 imageOneattempt.Transform.RotationSet(720 * t);
             }).WithEase(new InSineParameterizedEase()));
 
@@ -53,7 +52,7 @@ namespace AdofaiTheater
             }));
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                imageTrack.Transform.PositionSet(200, 50 + (1000 * t));
+                imageTrack.Transform.PositionSet(1600, 300 + (1000 * t));
             }).WithEase(new OutSineParameterizedEase()));
 
             stopwatch.Stop();     // element instantiation
