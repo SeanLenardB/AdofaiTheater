@@ -21,28 +21,39 @@ namespace AdofaiTheater
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.AddElement("bg",
                 new TheaterImage()
-                { ImagePath = @"Resources/adventbg.png" }
+                { ImagePath = @"Resources/space.png" }
                 .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
 
-            TheaterImage moveableImage = new() { ImagePath = @"Resources/twirl.png" };
-            moveableImage.PivotAtCenter();
-            moveableImage.Transform.PositionAdd(100, 50);
-            compiler.AddElement("move", moveableImage);
+            TheaterImage imageTrack = new() { ImagePath = @"Resources/adofaitrack.png" };
+            imageTrack.PivotAtCenter();
+            imageTrack.Transform.PositionAdd(100, 50);
+            compiler.AddElement("move", imageTrack);
+
+            TheaterImage imageOneattempt = new() { ImagePath = @"Resources/oneattempt.png" };
+            imageOneattempt.PivotAtCenter();
+            imageOneattempt.Transform.PositionSet(960, 480);
+            imageOneattempt.Transform.Layer = 10;
 
             compiler.AppendSpeech("你的脸怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.PositionSet(100 + (1500 * t), 50);
+                imageTrack.Transform.PositionSet(100 + (1500 * t), 50);
+                imageOneattempt.Transform.RotationSet(720 * t);
             }).WithEase(new InSineParameterizedEase()));
 
             compiler.AppendSpeech("你的脸，怎么又黄了？我脸黄不黄跟你有关系吗");
-            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            compiler.AttachEvent(new TheaterElementParameterizedAnimation(0, _ =>
             {
-                moveableImage.Transform.ScaleMultiply(0.95, 0.95);
+                imageOneattempt.Transform.Layer = -10;
             }));
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.PositionSet(200, 50 + (1000 * t));
+                imageTrack.Transform.ScaleMultiply(0.95, 0.95);
+                imageOneattempt.Transform.RotationSet(-720 * t);
+            }));
+            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            {
+                imageTrack.Transform.PositionSet(200, 50 + (1000 * t));
             }).WithEase(new OutSineParameterizedEase()));
 
             stopwatch.Stop();     // element instantiation
