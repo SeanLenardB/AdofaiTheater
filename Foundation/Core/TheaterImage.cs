@@ -34,7 +34,7 @@ namespace AdofaiTheater.Foundation.Core
         public override void Draw(SKCanvas canvas)
         {
             canvas.Save();
-            canvas.Concat(this.Transform.TotalMatrix());
+            canvas.Concat(this.Transform.Matrix());
             canvas.DrawImage(this._ImageCache, SKPoint.Empty);
             canvas.Restore();
         }
@@ -54,14 +54,14 @@ namespace AdofaiTheater.Foundation.Core
                 BackgroundScalingPolicy.FIT_ONE_AXIS => Math.Min(widthScaleMultiplier, heightScaleMultiplier),
                 _ => throw new Exception("Unknown scaling policy!")
             };
-            this.Transform.Matrix = SKMatrix.CreateScale((float)finalScaleMultiplier, (float)finalScaleMultiplier);
+            this.Transform.ScaleSet(finalScaleMultiplier, finalScaleMultiplier);
             return this;
         }
 
         public TheaterImage PivotAtCenter()
         {
             Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
-            this.Transform.SetPivot(this._ImageCache.Width / 2, this._ImageCache.Height / 2);
+            this.Transform.PivotAdd(this._ImageCache.Width / 2, this._ImageCache.Height / 2);
             return this;
         }
 
