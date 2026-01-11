@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AdofaiTheater.Compiler;
+using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Timeline;
 
@@ -28,26 +29,21 @@ namespace AdofaiTheater
             moveableImage.Transform.PositionAdd(100, 50);
             compiler.AddElement("move", moveableImage);
 
-            compiler.AppendSpeech("你的脸怎么红了？");
-
-            compiler.AppendSpeech("容光焕发！");
+            compiler.AppendSpeech("你的脸怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.PositionAdd(30, t * t * 50);
-            }));
+                moveableImage.Transform.PositionSet(100 + (1500 * t), 50);
+            }).WithEase(new InSineParameterizedEase()));
 
-            compiler.AppendSpeech("你的脸，怎么又黄了？");
+            compiler.AppendSpeech("你的脸，怎么又黄了？我脸黄不黄跟你有关系吗");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.RotateClockwise(50 - (50 * t * t * t));
+                moveableImage.Transform.ScaleMultiply(0.95, 0.95);
             }));
-
-            compiler.AppendSpeech("我脸黄不黄跟你有关系吗");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                moveableImage.Transform.ScaleMultiply(0.98, 0.98);
-                moveableImage.Transform.PositionAdd(t * t * t * t * t * 400, 0);
-            }));
+                moveableImage.Transform.PositionSet(200, 50 + (1000 * t));
+            }).WithEase(new OutSineParameterizedEase()));
 
             stopwatch.Stop();     // element instantiation
             Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
