@@ -42,7 +42,11 @@ namespace AdofaiTheater.Foundation.Basic
         {
             return SKMatrix.Concat(
                     SKMatrix.CreateTranslation(this.Position.X - this.Pivot.X, this.Position.Y - this.Pivot.Y),
-                    SKMatrix.CreateRotationDegrees((float)this.Rotation, this.Pivot.X, this.Pivot.Y));
+                    SKMatrix.Concat(
+                        SKMatrix.CreateRotationDegrees((float)this.Rotation, this.Pivot.X, this.Pivot.Y),
+                        SKMatrix.CreateScale(this.Scale.X, this.Scale.Y, this.Pivot.X, this.Pivot.Y)
+                    )
+                );
         }
 
         public Transform PositionSet(Vector2 newPosition)
