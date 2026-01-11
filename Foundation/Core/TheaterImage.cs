@@ -61,7 +61,7 @@ namespace AdofaiTheater.Foundation.Core
         public TheaterImage PivotAtCenter()
         {
             Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
-            this.Transform.SetPivot(this._ImageCache.Width, this._ImageCache.Height);
+            this.Transform.SetPivot(this._ImageCache.Width / 2, this._ImageCache.Height / 2);
             return this;
         }
 
