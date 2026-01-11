@@ -32,6 +32,7 @@ namespace AdofaiTheater
             imageOneattempt.PivotAtCenter();
             imageOneattempt.Transform.PositionSet(960, 480);
             imageOneattempt.Transform.Layer = 10;
+            compiler.AddElement("meta", imageOneattempt);
 
             compiler.AppendSpeech("你的脸怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
