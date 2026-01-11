@@ -41,7 +41,7 @@ namespace AdofaiTheater.Foundation.Basic
         public SKMatrix LocalMatrix()
         {
             return SKMatrix.Concat(
-                    SKMatrix.CreateTranslation(this.Position.X, this.Position.Y),
+                    SKMatrix.CreateTranslation(this.Position.X - this.Pivot.X, this.Position.Y - this.Pivot.Y),
                     SKMatrix.CreateRotationDegrees((float)this.Rotation, this.Pivot.X, this.Pivot.Y));
         }
 
