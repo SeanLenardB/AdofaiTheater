@@ -10,12 +10,22 @@ namespace AdofaiTheater.Foundation.Timeline
 	/// If you specified <see cref="TheaterElementParameterizedAnimation.WithEase"/>,
 	/// then the parameter will first be eased, then given to the action.
 	/// </summary>
-	public class TheaterElementParameterizedAnimation(Action<double> parameterizedAction) : ITheaterAdjustableDurationEvent
+	public class TheaterElementParameterizedAnimation : ITheaterAdjustableDurationEvent
 	{
+		public TheaterElementParameterizedAnimation(Action<double> parameterizedAction)
+		{
+			this.Action = parameterizedAction;
+		}
+		public TheaterElementParameterizedAnimation(int totalFrames, Action<double> parameterizedAction)
+		{
+			this.TotalFrames = totalFrames;
+			this.Action = parameterizedAction;
+		}
+
 		public int Frame { get; private set; } = 0;
 		public int TotalFrames { get; private set; } = 1;
 
-		public Action<double> Action { get; set; } = parameterizedAction;
+		public Action<double> Action { get; set; }
 
 		public bool NextFrame()
 		{
@@ -34,6 +44,7 @@ namespace AdofaiTheater.Foundation.Timeline
         public void SetTotalFrames(int frames) { this.TotalFrames = frames; }
 
 		public List<IParameterizedEase> Eases { get; set; } = [];
+
 		/// <summary>
 		/// <b>Appends</b> the <paramref name="ease"/> to the end of the easing queue.
 		/// </summary>
