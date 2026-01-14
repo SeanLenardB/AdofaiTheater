@@ -48,6 +48,7 @@ namespace AdofaiTheater
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 imageTrack.Transform.ScaleAdd(t / 50);
+                testCharacter.LeftArm.Transform.RotateCounterClockwise(t * 2);
             }));
 
             compiler.AppendSpeechAndSubtitle("你的脸怎么红了？容光焕发！");
@@ -55,6 +56,7 @@ namespace AdofaiTheater
             {
                 imageTrack.Transform.PositionSet(1500 * t, 300 * t);
                 imageOneattempt.Transform.RotationSet(720 * t);
+                testCharacter.RightLeg.Transform.RotateClockwise(t * 5);
             }).WithEase(new InSineParameterizedEase()));
 
             compiler.AppendSpeechAndSubtitle("你的脸，怎么又黄了？我脸黄不黄跟你有关系吗");
