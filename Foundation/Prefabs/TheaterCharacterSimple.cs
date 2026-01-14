@@ -100,24 +100,43 @@ namespace AdofaiTheater.Foundation.Prefabs
 		public TheaterImage LeftLeg { get; set; } = new();
 		public TheaterImage RightLeg { get; set; } = new();
 
-        public ITheaterEvent LayDown(int frames)
-		{
-			throw new NotImplementedException();
-		}
+        public ITheaterEvent TurnAround()
+        {
+            throw new NotImplementedException();
+        }
 
-		public ITheaterEvent Translate(int frames, double deltaPositionX, double deltaPositionY)
-		{
-			throw new NotImplementedException();
-		}
+		private bool _IsRightLegGoingBack = true;
+		private double _WalkOriginalX = 0;
+		private double _WalkOriginalY = 0;
+        public ITheaterEvent Walk(int frames, double deltaPositionX, double deltaPositionY)
+        {
+			this._WalkOriginalX = this.Transform.Position.X;
+			this._WalkOriginalY = this.Transform.Position.Y;
+            return new TheaterElementParameterizedAnimation(frames, t =>
+            {
+                if (t == 1d)
+                {
+                    this.LeftLeg.Transform.RotationSet(0);
+                    this.RightLeg.Transform.RotationSet(0);
+					this.Transform.PositionSet(this._WalkOriginalX + deltaPositionX, this._WalkOriginalY + deltaPositionY);
+                    return;
+                }
 
-		public ITheaterEvent TurnAround(int frames)
-		{
-			throw new NotImplementedException();
-		}
+				this.Transform.PositionAdd(deltaPositionX / frames, deltaPositionY / frames);
 
-		public ITheaterEvent Walk(int frames, double deltaPositionX, double deltaPositionY)
-		{
-			throw new NotImplementedException();
-		}
-	}
+				if (this._IsRightLegGoingBack)
+				{
+                    this.RightLeg.Transform.RotateCounterClockwise(3);
+                    this.LeftLeg.Transform.RotateClockwise(3);
+					this._IsRightLegGoingBack = this.RightLeg.Transform.Rotation > -20d;
+                }
+				else
+				{
+                    this.RightLeg.Transform.RotateClockwise(3);
+                    this.LeftLeg.Transform.RotateCounterClockwise(3);
+                    this._IsRightLegGoingBack = this.RightLeg.Transform.Rotation >= 20d;
+                }
+            });
+        }
+    }
 }
