@@ -20,7 +20,7 @@ namespace AdofaiTheater.Foundation.Prefabs
 
         public TheaterText AsTheaterSubtitle(Theater theater)
         {
-            this.Transform.PositionSet(theater.Configuration.Width / 2, theater.Configuration.Height / 2);
+            this.Transform.PositionSet(theater.Configuration.Width / 2, theater.Configuration.Height - 50);
             this.Transform.Layer = -114514;
             this.Paint.Color = SKColor.Parse("ffffff");
 
@@ -33,9 +33,9 @@ namespace AdofaiTheater.Foundation.Prefabs
             canvas.Concat(this.Transform.Matrix());
             canvas.DrawText(
                 this.Text,
-                new SKPoint(this.Transform.Position.X, this.Transform.Position.Y),
+                SKPoint.Empty,
                 SKTextAlign.Center,
-                new SKFont(SKTypeface.Default, size: 100),
+                new SKFont(SKTypeface.Default, size: 50),
                 this.Paint
             );
             canvas.Restore();
