@@ -21,7 +21,7 @@ namespace AdofaiTheater
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.AddElement("bg",
                 new TheaterImage()
-                { ImagePath = @"Resources/space.png" }
+                { ImagePath = @"Resources/finaldescent.png" }
                 .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
 
             TheaterImage imageTrack = new() { ImagePath = @"Resources/adofaitrack.png" };

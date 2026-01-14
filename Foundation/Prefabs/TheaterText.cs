@@ -23,6 +23,7 @@ namespace AdofaiTheater.Foundation.Prefabs
             this.Transform.PositionSet(theater.Configuration.Width / 2, theater.Configuration.Height - 50);
             this.Transform.Layer = -114514;
             this.Paint.Color = SKColor.Parse("ffffff");
+            this.Paint.ImageFilter = SKImageFilter.CreateDropShadow(0, 0, 10, 10, SKColor.Parse("000000"));
 
             return this;
         }
@@ -35,7 +36,7 @@ namespace AdofaiTheater.Foundation.Prefabs
                 this.Text,
                 SKPoint.Empty,
                 SKTextAlign.Center,
-                new SKFont(SKTypeface.Default, size: 50),
+                new SKFont(SKTypeface.FromFamilyName("Microsoft Yahei", SKFontStyle.Bold), size: 50),
                 this.Paint
             );
             canvas.Restore();
