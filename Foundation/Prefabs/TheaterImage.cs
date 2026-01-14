@@ -23,6 +23,7 @@ namespace AdofaiTheater.Foundation.Core
         private SKImage? _Image = null;
         public void Draw(SKCanvas canvas)
         {
+            Debug.Assert(this._Image is not null, "Trying to draw a null image!");
             canvas.Save();
             canvas.Concat(this.Transform.Matrix());
             canvas.DrawImage(this._Image, SKPoint.Empty);
