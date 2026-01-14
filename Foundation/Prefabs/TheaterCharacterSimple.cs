@@ -6,7 +6,7 @@ using AdofaiTheater.Foundation.Timeline;
 
 namespace AdofaiTheater.Foundation.Prefabs
 {
-	public class ClassicPandamanCharacter : ITheaterHumanoidCharacter
+	public class TheaterCharacterSimple : ITheaterHumanoidCharacter
 	{
 		public ITheaterEvent LayDown(int frames)
 		{
