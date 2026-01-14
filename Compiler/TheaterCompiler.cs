@@ -76,15 +76,33 @@ namespace AdofaiTheater.Compiler
         {
             this.AppendSpeech(speech);
 
-            var speechElement = new TheaterText(speech).AsTheaterSubtitle(this.Theater);
-            speechElement.Transform.Visible = false;
+            TheaterText speechElement = new TheaterText(speech).AsTheaterSubtitle(this.Theater);
             // TODO(seanlb): finish this after optimization
             this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", speechElement);
-            this.AttachEvent(new TheaterElementParameterizedAnimation(_ => speechElement.Transform.Visible = true));
-            this.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+
+            // NOTE(seanlb):
+            // If this is the first subtitle, we would want it to be visible at the beginning.
+            // But, if this is not, we don't want it to be on the canvas at the beginning.
+            // So, it will be NOT visible, and be animated to be visible at the end of the previous speech.
+            //
+            // Also note that this is a very scuffed way to do OnFrameStart()
+            // If in the future, there are more frame start events, we should migrate to a proper way to do it.
+            if (this.Segments.Count >= 2)
             {
-                if (t == 1d) { speechElement.Transform.Visible = false; }
-            }));
+                speechElement.Transform.Visible = false;
+                TheaterElementParameterizedAnimation subtitleVisibleAnimation =
+                    new(t =>
+                    {
+                        if (t == 1d) { speechElement.Transform.Visible = true; }
+                    });
+                subtitleVisibleAnimation.SetTotalFrames((int)(this.Segments[^2].SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond));
+                this.Segments[^2].BoundEvents.Add(subtitleVisibleAnimation);
+            }
+
+            this.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+                {
+                    if (t == 1d) { speechElement.Transform.Visible = false; }
+                }));
 
             return this;
         }
@@ -113,7 +131,7 @@ namespace AdofaiTheater.Compiler
             {
                 if (this.Segments
                         .Take(segmentIndex + 1)  // NOTE(seanlb): This is ok because we can take 1000 elements from an empty thing.
-                        .Sum(segment => (int)(segment.SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond)) <= frame)
+                        .Sum(segment => (int)(segment.SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond)) < frame)
                 { segmentIndex++; }
                 if (segmentIndex >= this.Segments.Count) { return false; }
 
