@@ -23,6 +23,9 @@ namespace AdofaiTheater.Foundation.Basic
         public Vector2 Scale { get; set; } = Vector2.One;
         public double Rotation { get; set; } = 0;
         public Transform? Parent { get; set; } = null;
+        // NOTE(seanlb): I double whether this belongs to the Transform class,
+        // or should be a separate event to toggle on/off the element.
+        public bool Visible { get; set; } = true;
 
 
 

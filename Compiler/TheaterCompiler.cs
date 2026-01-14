@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
+using AdofaiTheater.Foundation.Prefabs;
 using AdofaiTheater.Foundation.Timeline;
 using FFMpegCore;
 using FFMpegCore.Pipes;
@@ -20,9 +21,9 @@ namespace AdofaiTheater.Compiler
     {
         public Theater Theater { get; private set; } = new();
 
-        private Dictionary<string, TheaterElement> Elements { get; set; } = [];
+        private Dictionary<string, ITheaterElement> Elements { get; set; } = [];
 
-        public TheaterCompiler AddElement<T>(string id, T element) where T : TheaterElement
+        public TheaterCompiler AddElement<T>(string id, T element) where T : ITheaterElement
         {
             // NOTE(seanlb): This can become a compiler error.
             Debug.Assert(!this.Elements.ContainsKey(id), "Another element with the same id exists!");
@@ -33,7 +34,7 @@ namespace AdofaiTheater.Compiler
             return this;
         }
 
-        public T GetElement<T>(string id) where T : TheaterElement
+        public T GetElement<T>(string id) where T : class, ITheaterElement
         {
             // NOTE(seanlb): This can become a compiler error.
             // Also, I don't want a nullable type here.
@@ -58,38 +59,50 @@ namespace AdofaiTheater.Compiler
         // 3. repeat the steps until the theater is done.
         // 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
         private List<TheaterSpeechSegment> Segments { get; set; } = [];
+
         [SupportedOSPlatform("windows")]
         public TheaterCompiler AppendSpeech(string speech)
         {
-            TheaterSpeechSegment segment = new()
-            {
-                SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav")
-            };
+            TheaterSpeechSegment segment = 
+                TheaterSpeechSynthesizer.Synthesize(speech, 
+                    this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav"));
             this.Segments.Add(segment);
 
-            string speechSsml = $@"
-                <speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'>
-                    <voice name='Microsoft Kangkang'>
-                        <prosody pitch='-100%'>
-                            {speech}
-                        </prosody>
-                    </voice>
-                </speak>";
+            return this;
+        }
 
-            using (SpeechSynthesizer synthesizer = new())
+        [SupportedOSPlatform("windows")]
+        public TheaterCompiler AppendSpeechAndSubtitle(string speech)
+        {
+            this.AppendSpeech(speech);
+
+            TheaterText speechElement = new TheaterText(speech).AsTheaterSubtitle(this.Theater);
+            // TODO(seanlb): finish this after optimization
+            this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", speechElement);
+
+            // NOTE(seanlb):
+            // If this is the first subtitle, we would want it to be visible at the beginning.
+            // But, if this is not, we don't want it to be on the canvas at the beginning.
+            // So, it will be NOT visible, and be animated to be visible at the end of the previous speech.
+            //
+            // Also note that this is a very scuffed way to do OnFrameStart()
+            // If in the future, there are more frame start events, we should migrate to a proper way to do it.
+            if (this.Segments.Count >= 2)
             {
-                synthesizer.Volume = 100;
-                synthesizer.Rate = 5;
-                synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
-                synthesizer.SpeakSsml(speechSsml);
+                speechElement.Transform.Visible = false;
+                TheaterElementParameterizedAnimation subtitleVisibleAnimation =
+                    new(t =>
+                    {
+                        if (t == 1d) { speechElement.Transform.Visible = true; }
+                    });
+                subtitleVisibleAnimation.SetTotalFrames((int)(this.Segments[^2].SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond));
+                this.Segments[^2].BoundEvents.Add(subtitleVisibleAnimation);
             }
 
-            // NOTE(seanlb): the original bookmark is shit.
-            // I have to rely on other people's power to do the .wav length acquisition.
-            using (AudioFileReader reader = new(segment.SpeechFileLocation))
-            {
-                segment.SpeechDuration = reader.TotalTime;
-            }
+            this.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+                {
+                    if (t == 1d) { speechElement.Transform.Visible = false; }
+                }));
 
             return this;
         }
@@ -118,7 +131,7 @@ namespace AdofaiTheater.Compiler
             {
                 if (this.Segments
                         .Take(segmentIndex + 1)  // NOTE(seanlb): This is ok because we can take 1000 elements from an empty thing.
-                        .Sum(segment => (int)(segment.SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond)) <= frame)
+                        .Sum(segment => (int)(segment.SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond)) < frame)
                 { segmentIndex++; }
                 if (segmentIndex >= this.Segments.Count) { return false; }
 

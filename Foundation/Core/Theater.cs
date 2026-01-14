@@ -25,7 +25,7 @@ namespace AdofaiTheater.Foundation.Core
 
 
 
-        private readonly List<TheaterElement> Elements = [];
+        private readonly List<ITheaterElement> Elements = [];
         /// <summary>
         /// Animates and renders the scene.
         /// <br/><br/>
@@ -43,7 +43,16 @@ namespace AdofaiTheater.Foundation.Core
                     {
                         canvas.Clear();
                         frameNumber++;
-                        foreach (var element in this.Elements.OrderByDescending(e => e.Transform.Layer)) { element.Draw(canvas); }
+                        foreach (
+                            var element in
+                            from element in this.Elements 
+                            where element.Transform.Visible 
+                            orderby element.Transform.Layer descending
+                            select element
+                            )
+                        {
+                            element.Draw(canvas);
+                        }
 
                         yield return new SKBitmapFrame(bitmap);
                     }
@@ -52,7 +61,7 @@ namespace AdofaiTheater.Foundation.Core
             }
         }
 
-        public void AddElement(TheaterElement element)
+        public void AddElement(ITheaterElement element)
         {
             // NOTE(seanlb): this class can inherit from TheaterElementCollection, but I don't feel like it.
             Debug.Assert(element.Transform.Parent is null, "You are adding a non-dangling item to the theater! This might not be what you intended!");

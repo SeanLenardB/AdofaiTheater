@@ -21,7 +21,7 @@ namespace AdofaiTheater
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.AddElement("bg",
                 new TheaterImage()
-                { ImagePath = @"Resources/space.png" }
+                { ImagePath = @"Resources/journeyend.png" }
                 .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
 
             TheaterImage imageTrack = new() { ImagePath = @"Resources/adofaitrack.png" };
@@ -34,14 +34,20 @@ namespace AdofaiTheater
             imageOneattempt.Transform.Layer = 10;
             compiler.AddElement("meta", imageOneattempt);
 
-            compiler.AppendSpeech("你的脸怎么红了？容光焕发！");
+            compiler.AppendSpeechAndSubtitle("A simple text to test the text rendering.");
+            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            {
+                imageTrack.Transform.ScaleAdd(t / 10);
+            }));
+
+            compiler.AppendSpeechAndSubtitle("你的脸怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
                 imageTrack.Transform.PositionSet(100 + (1500 * t), 300 * t);
                 imageOneattempt.Transform.RotationSet(720 * t);
             }).WithEase(new InSineParameterizedEase()));
 
-            compiler.AppendSpeech("你的脸，怎么又黄了？我脸黄不黄跟你有关系吗");
+            compiler.AppendSpeechAndSubtitle("你的脸，怎么又黄了？我脸黄不黄跟你有关系吗");
             compiler.AttachEvent(new TheaterElementParameterizedAnimation(0, _ =>
             {
                 imageOneattempt.Transform.Layer = -10;
