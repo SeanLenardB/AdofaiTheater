@@ -82,12 +82,12 @@ namespace AdofaiTheater.Foundation.Basic
             this.Rotation = angleDegrees;
             return this;
         }
-        public Transform RotateCounterClockwise(double angleDegrees)
+        public Transform RotateClockwise(double angleDegrees)
         {
             this.Rotation += angleDegrees;
             return this;
         }
-        public Transform RotateClockwise(double angleDegrees) => this.RotateCounterClockwise(-angleDegrees);
+        public Transform RotateCounterClockwise(double angleDegrees) => this.RotateClockwise(-angleDegrees);
 
         public Transform ScaleMultiply(Vector2 scaleMultiplier)
         {
