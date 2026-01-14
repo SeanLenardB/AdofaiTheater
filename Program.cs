@@ -45,31 +45,32 @@ namespace AdofaiTheater
             compiler.AddElement("character", testCharacter);
 
             compiler.AppendSpeechAndSubtitle("A simple text to test the text rendering.");
-            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            compiler.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
             {
                 imageTrack.Transform.ScaleAdd(t / 50);
                 testCharacter.LeftArm.Transform.RotateCounterClockwise(t * 2);
             }));
 
-            compiler.AppendSpeechAndSubtitle("你的脸怎么红了？容光焕发！");
-            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            compiler.AppendSpeechAndSubtitle("你的脸怎么红了？精神焕发！");
+            compiler.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
             {
                 imageTrack.Transform.PositionSet(1500 * t, 300 * t);
                 imageOneattempt.Transform.RotationSet(720 * t);
-                testCharacter.RightLeg.Transform.RotateClockwise(t * 5);
             }).WithEase(new InSineParameterizedEase()));
+            compiler.AttachEventAutoDuration(T => testCharacter.Walk(T, -500, 0));
 
             compiler.AppendSpeechAndSubtitle("你的脸，怎么又黄了？我脸黄不黄跟你有关系吗");
             compiler.AttachEvent(new TheaterElementParameterizedAnimation(0, _ =>
             {
                 imageOneattempt.Transform.Layer = -10;
             }));
-            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            compiler.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
             {
                 imageTrack.Transform.ScaleMultiply(0.95, 0.95);
                 imageOneattempt.Transform.RotationSet(-720 * t);
+                testCharacter.Head.Transform.RotateClockwise(t * 5);
             }));
-            compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            compiler.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
             {
                 imageTrack.Transform.PositionSet(1500, 300 + (1000 * t));
             }).WithEase(new OutSineParameterizedEase()));
