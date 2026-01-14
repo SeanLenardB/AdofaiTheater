@@ -4,6 +4,7 @@ using System.Runtime.Versioning;
 using AdofaiTheater.Compiler;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
+using AdofaiTheater.Foundation.Prefabs;
 using AdofaiTheater.Foundation.Timeline;
 
 namespace AdofaiTheater
@@ -21,18 +22,27 @@ namespace AdofaiTheater
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.AddElement("bg",
                 new TheaterImage()
-                { ImagePath = @"Resources/journeyend.png" }
+                .UseFile(@"Resources/journeyend.png")
                 .AsBackground(compiler.Theater, TheaterImage.BackgroundScalingPolicy.FILL_SCREEN));
 
-            TheaterImage imageTrack = new() { ImagePath = @"Resources/adofaitrack.png" };
+            TheaterImage imageTrack = new TheaterImage().UseFile(@"Resources/adofaitrack.png");
             imageTrack.PivotAtCenter();
             compiler.AddElement("move", imageTrack);
 
-            TheaterImage imageOneattempt = new() { ImagePath = @"Resources/oneattempt.png" };
+            TheaterImage imageOneattempt = new TheaterImage().UseFile(@"Resources/oneattempt.png");
             imageOneattempt.PivotAtCenter();
             imageOneattempt.Transform.PositionSet(960, 480);
             imageOneattempt.Transform.Layer = 10;
             compiler.AddElement("meta", imageOneattempt);
+
+            TheaterCharacterSimpleBuilder characterBuilder = new();
+            TheaterCharacterSimple testCharacter =
+                characterBuilder
+                .WithResourceImage(@"Resources/Patterns/CharacterSimple_Torso.png")
+                .BuildCharacter();
+            testCharacter.Transform.PositionSet(960, 480);
+            testCharacter.Transform.Layer = -11451;
+            compiler.AddElement("character", testCharacter);
 
             compiler.AppendSpeechAndSubtitle("A simple text to test the text rendering.");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>

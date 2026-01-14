@@ -12,34 +12,39 @@ namespace AdofaiTheater.Foundation.Core
     {
         ~TheaterImage()
         {
-            this._ImageCache?.Dispose();
+            this._Image?.Dispose();
         }
-
-        public string ImagePath
-        {
-            get; set
-            {
-                this._ImageCache?.Dispose();
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    this._ImageCache = SKImage.FromEncodedData(value);
-                }
-                field = value;
-            }
-        } = "";
 
         public Transform Transform { get; set; } = new();
 
         // NOTE(seanlb): This is a very important optimization.
         // Remember to mark the cache dirty if the image is changed.
         // Also remember to release the memory to prevent leaks.
-        private SKImage? _ImageCache = null;
+        private SKImage? _Image = null;
         public void Draw(SKCanvas canvas)
         {
             canvas.Save();
             canvas.Concat(this.Transform.Matrix());
-            canvas.DrawImage(this._ImageCache, SKPoint.Empty);
+            canvas.DrawImage(this._Image, SKPoint.Empty);
             canvas.Restore();
+        }
+
+        public TheaterImage UseFile(string image)
+        {
+            this._Image?.Dispose();
+            if (!string.IsNullOrWhiteSpace(image))
+            {
+				Debug.Assert(image is not null, "No such file found!");
+                this._Image = SKImage.FromEncodedData(image);
+            }
+            return this;
+        }
+
+        public TheaterImage UseSKImage(SKImage image)
+        {
+            this._Image?.Dispose();
+            this._Image = image;
+            return this;
         }
 
         /// <summary>
@@ -48,9 +53,9 @@ namespace AdofaiTheater.Foundation.Core
         public TheaterImage AsBackground(Theater theater, BackgroundScalingPolicy scalingPolicy)
         {
             this.Transform.Layer = 1000;
-            Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
-            double widthScaleMultiplier = (double)theater.Configuration.Width / this._ImageCache.Width;
-            double heightScaleMultiplier = (double)theater.Configuration.Height / this._ImageCache.Height;
+            Debug.Assert(this._Image is not null, "The cache is not null. You should assign an image first.");
+            double widthScaleMultiplier = (double)theater.Configuration.Width / this._Image.Width;
+            double heightScaleMultiplier = (double)theater.Configuration.Height / this._Image.Height;
             double finalScaleMultiplier = scalingPolicy switch
             {
                 BackgroundScalingPolicy.FILL_SCREEN => Math.Max(widthScaleMultiplier, heightScaleMultiplier),
@@ -63,8 +68,8 @@ namespace AdofaiTheater.Foundation.Core
 
         public TheaterImage PivotAtCenter()
         {
-            Debug.Assert(this._ImageCache is not null, "The cache is not null. You should assign an image first.");
-            this.Transform.PivotAdd(this._ImageCache.Width / 2, this._ImageCache.Height / 2);
+            Debug.Assert(this._Image is not null, "The cache is not null. You should assign an image first.");
+            this.Transform.PivotAdd(this._Image.Width / 2, this._Image.Height / 2);
             return this;
         }
 
