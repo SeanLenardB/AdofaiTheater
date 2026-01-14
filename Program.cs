@@ -49,6 +49,7 @@ namespace AdofaiTheater
             {
                 imageTrack.Transform.ScaleAdd(t / 50);
                 testCharacter.LeftArm.Transform.RotateCounterClockwise(t * 2);
+                compiler.Theater.RootTransform.RotateClockwise(0.3);
             }));
 
             compiler.AppendSpeechAndSubtitle("你的脸怎么红了？精神焕发！");
@@ -74,6 +75,7 @@ namespace AdofaiTheater
             {
                 imageTrack.Transform.PositionSet(1500, 300 + (1000 * t));
             }).WithEase(new OutSineParameterizedEase()));
+            compiler.AttachEventAutoDuration(T => testCharacter.Walk(T, 1200, 0));
 
             stopwatch.Stop();     // element instantiation
             Console.WriteLine($"Compilation:   {stopwatch.Elapsed.TotalSeconds}s.");
