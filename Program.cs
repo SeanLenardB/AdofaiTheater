@@ -31,7 +31,7 @@ namespace AdofaiTheater
 
             TheaterImage imageOneattempt = new TheaterImage().UseFile(@"Resources/oneattempt.png");
             imageOneattempt.PivotAtCenter();
-            imageOneattempt.Transform.PositionSet(960, 480);
+            imageOneattempt.Transform.PositionSet(960, 540);
             imageOneattempt.Transform.Layer = 10;
             compiler.AddElement("meta", imageOneattempt);
 
@@ -40,20 +40,20 @@ namespace AdofaiTheater
                 characterBuilder
                 .WithResourceImage(@"Resources/Patterns/CharacterSimple_Torso.png")
                 .BuildCharacter();
-            testCharacter.Transform.PositionSet(960, 480);
+            testCharacter.Transform.PositionSet(960, 540);
             testCharacter.Transform.Layer = -11451;
             compiler.AddElement("character", testCharacter);
 
             compiler.AppendSpeechAndSubtitle("A simple text to test the text rendering.");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                imageTrack.Transform.ScaleAdd(t / 10);
+                imageTrack.Transform.ScaleAdd(t / 50);
             }));
 
             compiler.AppendSpeechAndSubtitle("你的脸怎么红了？容光焕发！");
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                imageTrack.Transform.PositionSet(100 + (1500 * t), 300 * t);
+                imageTrack.Transform.PositionSet(1500 * t, 300 * t);
                 imageOneattempt.Transform.RotationSet(720 * t);
             }).WithEase(new InSineParameterizedEase()));
 
@@ -69,7 +69,7 @@ namespace AdofaiTheater
             }));
             compiler.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
             {
-                imageTrack.Transform.PositionSet(1600, 300 + (1000 * t));
+                imageTrack.Transform.PositionSet(1500, 300 + (1000 * t));
             }).WithEase(new OutSineParameterizedEase()));
 
             stopwatch.Stop();     // element instantiation
