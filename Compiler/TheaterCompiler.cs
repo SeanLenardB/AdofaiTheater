@@ -20,9 +20,9 @@ namespace AdofaiTheater.Compiler
     {
         public Theater Theater { get; private set; } = new();
 
-        private Dictionary<string, TheaterElement> Elements { get; set; } = [];
+        private Dictionary<string, ITheaterElement> Elements { get; set; } = [];
 
-        public TheaterCompiler AddElement<T>(string id, T element) where T : TheaterElement
+        public TheaterCompiler AddElement<T>(string id, T element) where T : ITheaterElement
         {
             // NOTE(seanlb): This can become a compiler error.
             Debug.Assert(!this.Elements.ContainsKey(id), "Another element with the same id exists!");
@@ -33,7 +33,7 @@ namespace AdofaiTheater.Compiler
             return this;
         }
 
-        public T GetElement<T>(string id) where T : TheaterElement
+        public T GetElement<T>(string id) where T : class, ITheaterElement
         {
             // NOTE(seanlb): This can become a compiler error.
             // Also, I don't want a nullable type here.

@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using AdofaiTheater.Foundation.Basic;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace AdofaiTheater.Foundation.Core
 {
-    public class TheaterImage : TheaterElement
+    public class TheaterImage : ITheaterElement
     {
         ~TheaterImage()
         {
@@ -27,11 +28,13 @@ namespace AdofaiTheater.Foundation.Core
             }
         } = "";
 
-		// NOTE(seanlb): This is a very important optimization.
-		// Remember to mark the cache dirty if the image is changed.
-		// Also remember to release the memory to prevent leaks.
-		private SKImage? _ImageCache = null;
-        public override void Draw(SKCanvas canvas)
+        public Transform Transform { get; set; } = new();
+
+        // NOTE(seanlb): This is a very important optimization.
+        // Remember to mark the cache dirty if the image is changed.
+        // Also remember to release the memory to prevent leaks.
+        private SKImage? _ImageCache = null;
+        public void Draw(SKCanvas canvas)
         {
             canvas.Save();
             canvas.Concat(this.Transform.Matrix());

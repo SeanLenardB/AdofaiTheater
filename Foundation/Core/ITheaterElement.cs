@@ -7,20 +7,22 @@ using System.Text;
 
 namespace AdofaiTheater.Foundation.Core
 {
-    // NOTE(seanlb): These two classes might not end up being abstract.
-    // I'm making them abstract because this forces me to implement some useful classes.
-    public abstract class TheaterElement
+    public interface ITheaterElement
     {
-        public Transform Transform { get; set; } = new();
+        public Transform Transform { get; set; }
 
-        public virtual void Draw(SKCanvas canvas) { }
+        public void Draw(SKCanvas canvas);
     }
 
-    public abstract class TheaterElementCollection : TheaterElement
-    {
-        private List<TheaterElement> Elements { get; set; } = [];
+    // NOTE(seanlb): This class might not end up being abstract.
+    // I'm making them abstract because this forces me to implement some useful classes.
 
-        public override void Draw(SKCanvas canvas)
+    public abstract class TheaterElementCollection : ITheaterElement
+    {
+        public Transform Transform { get; set; } = new();
+        private List<ITheaterElement> Elements { get; set; } = [];
+
+        public void Draw(SKCanvas canvas)
         {
             foreach (var element in this.Elements)
             {
@@ -31,7 +33,7 @@ namespace AdofaiTheater.Foundation.Core
             }
         }
 
-        public void Add(TheaterElement element)
+        public void Add(ITheaterElement element)
         {
             // NOTE(seanlb): I don't know whether this is necessary. Better strict than loose.
             Debug.Assert(element.Transform.Parent is null, "You are adding a non-dangling item to the collection! This might not be what you intended!");
