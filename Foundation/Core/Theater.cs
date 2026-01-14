@@ -43,7 +43,16 @@ namespace AdofaiTheater.Foundation.Core
                     {
                         canvas.Clear();
                         frameNumber++;
-                        foreach (var element in this.Elements.OrderByDescending(e => e.Transform.Layer)) { element.Draw(canvas); }
+                        foreach (
+                            var element in
+                            from element in this.Elements 
+                            where element.Transform.Visible 
+                            orderby element.Transform.Layer descending
+                            select element
+                            )
+                        {
+                            element.Draw(canvas);
+                        }
 
                         yield return new SKBitmapFrame(bitmap);
                     }

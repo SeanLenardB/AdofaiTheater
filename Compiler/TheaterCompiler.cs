@@ -76,8 +76,15 @@ namespace AdofaiTheater.Compiler
         {
             this.AppendSpeech(speech);
 
+            var speechElement = new TheaterText(speech).AsTheaterSubtitle(this.Theater);
+            speechElement.Transform.Visible = false;
             // TODO(seanlb): finish this after optimization
-            this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", new TheaterText(speech).AsTheaterSubtitle(this.Theater));
+            this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", speechElement);
+            this.AttachEvent(new TheaterElementParameterizedAnimation(_ => speechElement.Transform.Visible = true));
+            this.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            {
+                if (t == 1d) { speechElement.Transform.Visible = false; }
+            }));
 
             return this;
         }
