@@ -61,35 +61,10 @@ namespace AdofaiTheater.Compiler
         [SupportedOSPlatform("windows")]
         public TheaterCompiler AppendSpeech(string speech)
         {
-            TheaterSpeechSegment segment = new()
-            {
-                SpeechFileLocation = this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav")
-            };
+            TheaterSpeechSegment segment = 
+                TheaterSpeechSynthesizer.Synthesize(speech, 
+                    this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav"));
             this.Segments.Add(segment);
-
-            string speechSsml = $@"
-                <speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'>
-                    <voice name='Microsoft Kangkang'>
-                        <prosody pitch='-100%'>
-                            {speech}
-                        </prosody>
-                    </voice>
-                </speak>";
-
-            using (SpeechSynthesizer synthesizer = new())
-            {
-                synthesizer.Volume = 100;
-                synthesizer.Rate = 5;
-                synthesizer.SetOutputToWaveFile(segment.SpeechFileLocation);
-                synthesizer.SpeakSsml(speechSsml);
-            }
-
-            // NOTE(seanlb): the original bookmark is shit.
-            // I have to rely on other people's power to do the .wav length acquisition.
-            using (AudioFileReader reader = new(segment.SpeechFileLocation))
-            {
-                segment.SpeechDuration = reader.TotalTime;
-            }
 
             return this;
         }
