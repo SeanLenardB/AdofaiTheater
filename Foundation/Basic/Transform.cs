@@ -32,32 +32,16 @@ namespace AdofaiTheater.Foundation.Basic
 
 
 
-        // NOTE(seanlb):
-        // In SkiaSharp, the drawing is done by specifying the topleft corner of the thing you want to draw,
-        // and that is very annoying. So to counter that, we introduced the Pivot feature.
-        // 
-        // What we do to draw the thing is by first doing all those mathematical transformation, and then
-        // move the image by its pivot and draw to the correct position.
-        // However, that does not align with maths. So what we are doing here is splitting the transformation into
-        // two different steps.
-        //
-        // LogicalMatrix is the same with mathematical formulas. Then the Matrix is where we really draw the things.
-        public SKMatrix Matrix()
-        {
-            return SKMatrix.Concat(SKMatrix.CreateTranslation(-this.Pivot.X, -this.Pivot.Y), this.LogicalMatrix());
-        }
-
-        private SKMatrix LogicalMatrix()
-        {
-            SKMatrix currentMatrix = this.LocalLogicalMatrix();
+        public SKMatrix Matrix() {
+            SKMatrix currentMatrix = this.LocalMatrix();
             if (this.Parent is null) { return currentMatrix; }
-            return SKMatrix.Concat(this.Parent.LogicalMatrix(), currentMatrix);
+            return SKMatrix.Concat(this.Parent.Matrix(), currentMatrix);
         }
 
-        private SKMatrix LocalLogicalMatrix()
+        private SKMatrix LocalMatrix()
         {
             return SKMatrix.Concat(
-                SKMatrix.CreateTranslation(this.Position.X, this.Position.Y),
+                SKMatrix.CreateTranslation(this.Position.X - this.Pivot.X, this.Position.Y - this.Pivot.Y),
                 SKMatrix.Concat(
                     SKMatrix.CreateTranslation(this.Pivot.X, this.Pivot.Y),
                     SKMatrix.Concat(

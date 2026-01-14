@@ -37,23 +37,18 @@ namespace AdofaiTheater.Foundation.Prefabs
 
 				this.Character.LeftArm.UseSKImage(torsoImage.Subset(SKRectI.Create(257, 1, 133, 254)));
 				this.Character.LeftArm.Transform.PivotSet(73, 65).PositionSet(49, -84).RotateClockwise(30);
-				this.Character.LeftArm.Transform.Parent = this.Character.Body.Transform;
 
 				this.Character.RightArm.UseSKImage(torsoImage.Subset(SKRectI.Create(392, 1, 120, 254)));
 				this.Character.RightArm.Transform.PivotSet(52, 65).PositionSet(-39, -98).RotateClockwise(30);
-				this.Character.RightArm.Transform.Parent = this.Character.Body.Transform;
 
                 this.Character.Head.UseSKImage(torsoImage.Subset(SKRectI.Create(1, 1, 254, 254)));
 				this.Character.Head.Transform.PivotSet(132, 196).PositionSet(13, -148);
-				this.Character.Head.Transform.Parent = this.Character.Body.Transform;
 
 				this.Character.LeftLeg.UseSKImage(torsoImage.Subset(SKRectI.Create(257, 257, 133, 255)));
 				this.Character.LeftLeg.Transform.PivotSet(78, 77).PositionSet(35, 18);
-				this.Character.LeftLeg.Transform.Parent = this.Character.Body.Transform;
 
 				this.Character.RightLeg.UseSKImage(torsoImage.Subset(SKRectI.Create(392, 257, 120, 255)));
 				this.Character.RightLeg.Transform.PivotSet(60, 79).PositionSet(-34, 9);
-				this.Character.RightLeg.Transform.Parent = this.Character.Body.Transform;
             }
 
             return this;

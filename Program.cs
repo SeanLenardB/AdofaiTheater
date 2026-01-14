@@ -27,6 +27,7 @@ namespace AdofaiTheater
 
             TheaterImage imageTrack = new TheaterImage().UseFile(@"Resources/adofaitrack.png");
             imageTrack.PivotAtCenter();
+            imageTrack.Transform.PositionSet(0, 0);
             compiler.AddElement("move", imageTrack);
 
             TheaterImage imageOneattempt = new TheaterImage().UseFile(@"Resources/oneattempt.png");
@@ -49,7 +50,6 @@ namespace AdofaiTheater
             {
                 imageTrack.Transform.ScaleAdd(t / 50);
                 testCharacter.LeftArm.Transform.RotateCounterClockwise(t * 2);
-                compiler.Theater.RootTransform.RotateClockwise(0.3);
             }));
 
             compiler.AppendSpeechAndSubtitle("你的脸怎么红了？精神焕发！");

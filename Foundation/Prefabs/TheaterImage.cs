@@ -24,6 +24,7 @@ namespace AdofaiTheater.Foundation.Core
         public void Draw(SKCanvas canvas)
         {
             Debug.Assert(this._Image is not null, "Trying to draw a null image!");
+
             canvas.Save();
             canvas.Concat(this.Transform.Matrix());
             canvas.DrawImage(this._Image, SKPoint.Empty);
@@ -70,7 +71,7 @@ namespace AdofaiTheater.Foundation.Core
         public TheaterImage PivotAtCenter()
         {
             Debug.Assert(this._Image is not null, "The cache is not null. You should assign an image first.");
-            this.Transform.PivotAdd(this._Image.Width / 2, this._Image.Height / 2);
+            this.Transform.PivotSet(this._Image.Width / 2, this._Image.Height / 2);
             return this;
         }
 
