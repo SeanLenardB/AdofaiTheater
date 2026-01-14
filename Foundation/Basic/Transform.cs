@@ -21,6 +21,9 @@ namespace AdofaiTheater.Foundation.Basic
         public Vector2 Pivot { get; set; } = Vector2.Zero;
         public Vector2 Position { get; set; } = Vector2.Zero;
         public Vector2 Scale { get; set; } = Vector2.One;
+        /// <summary>
+        /// Counterclockwise direction is positive.
+        /// </summary>
         public double Rotation { get; set; } = 0;
         public Transform? Parent { get; set; } = null;
         // NOTE(seanlb): I double whether this belongs to the Transform class,
