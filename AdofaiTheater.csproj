@@ -34,7 +34,7 @@
     <None Update="Resources\ori.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\Patterns\CharacterSimple.png">
+    <None Update="Resources\Patterns\CharacterSimple_Torso.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\quartrond.png">
