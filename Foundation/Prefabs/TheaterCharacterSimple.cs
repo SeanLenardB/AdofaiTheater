@@ -100,20 +100,24 @@ namespace AdofaiTheater.Foundation.Prefabs
 		public TheaterImage LeftLeg { get; set; } = new();
 		public TheaterImage RightLeg { get; set; } = new();
 
-        public ITheaterEvent TurnAround()
-        {
-            throw new NotImplementedException();
-        }
-
 		private bool _IsRightLegGoingBack = true;
 		private double _WalkOriginalX = 0;
 		private double _WalkOriginalY = 0;
         public ITheaterEvent Walk(int frames, double deltaPositionX, double deltaPositionY)
         {
-			this._WalkOriginalX = this.Transform.Position.X;
+            this._WalkOriginalX = this.Transform.Position.X;
 			this._WalkOriginalY = this.Transform.Position.Y;
             return new TheaterElementParameterizedAnimation(frames, t =>
             {
+                if (deltaPositionX > 0)
+                {
+					this.Transform.ScaleSet(-1, 1);
+                }
+                else
+                {
+					this.Transform.ScaleSet(1, 1);
+                }
+
                 if (t == 1d)
                 {
                     this.LeftLeg.Transform.RotationSet(0);
