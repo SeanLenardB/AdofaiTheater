@@ -8,8 +8,6 @@ namespace AdofaiTheater.Foundation.Core
     public interface ITheaterHumanoidCharacter
     {
         public ITheaterEvent Walk(int frames, double deltaPositionX, double deltaPositionY);
-        public ITheaterEvent Translate(int frames, double deltaPositionX, double deltaPositionY);
-        public ITheaterEvent LayDown(int frames);
-        public ITheaterEvent TurnAround(int frames);  // NOTE(seanlb): This might end up being an instant animation because linear algebra is tough.
+        public ITheaterEvent TurnAround();  // NOTE(seanlb): This might end up being an instant animation because linear algebra is tough.
     }
 }
