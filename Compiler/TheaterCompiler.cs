@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
+using AdofaiTheater.Foundation.Prefabs;
 using AdofaiTheater.Foundation.Timeline;
 using FFMpegCore;
 using FFMpegCore.Pipes;
@@ -58,6 +59,7 @@ namespace AdofaiTheater.Compiler
         // 3. repeat the steps until the theater is done.
         // 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
         private List<TheaterSpeechSegment> Segments { get; set; } = [];
+
         [SupportedOSPlatform("windows")]
         public TheaterCompiler AppendSpeech(string speech)
         {
@@ -65,6 +67,17 @@ namespace AdofaiTheater.Compiler
                 TheaterSpeechSynthesizer.Synthesize(speech, 
                     this.Theater.Configuration.ConcatenatePath($"Output_Audio_Segment_{this.Segments.Count}.wav"));
             this.Segments.Add(segment);
+
+            return this;
+        }
+
+        [SupportedOSPlatform("windows")]
+        public TheaterCompiler AppendSpeechAndSubtitle(string speech)
+        {
+            this.AppendSpeech(speech);
+
+            // TODO(seanlb): finish this after optimization
+            this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", new TheaterText(speech).AsTheaterSubtitle(this.Theater));
 
             return this;
         }
