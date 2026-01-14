@@ -21,6 +21,9 @@ namespace AdofaiTheater.Foundation.Basic
         public Vector2 Pivot { get; set; } = Vector2.Zero;
         public Vector2 Position { get; set; } = Vector2.Zero;
         public Vector2 Scale { get; set; } = Vector2.One;
+        /// <summary>
+        /// Counterclockwise direction is positive.
+        /// </summary>
         public double Rotation { get; set; } = 0;
         public Transform? Parent { get; set; } = null;
         // NOTE(seanlb): I double whether this belongs to the Transform class,
@@ -29,27 +32,23 @@ namespace AdofaiTheater.Foundation.Basic
 
 
 
-        /// <summary>
-        /// Get the total matrix of the transform.
-        /// </summary>
-        public SKMatrix Matrix()
-        {
+        public SKMatrix Matrix() {
             SKMatrix currentMatrix = this.LocalMatrix();
             if (this.Parent is null) { return currentMatrix; }
             return SKMatrix.Concat(this.Parent.Matrix(), currentMatrix);
         }
-        /// <summary>
-        /// Get the local matrix of the transform.
-        /// </summary>
-        public SKMatrix LocalMatrix()
+
+        private SKMatrix LocalMatrix()
         {
             return SKMatrix.Concat(
-                    SKMatrix.CreateTranslation(this.Position.X - this.Pivot.X, this.Position.Y - this.Pivot.Y),
+                SKMatrix.CreateTranslation(this.Position.X - this.Pivot.X, this.Position.Y - this.Pivot.Y),
+                SKMatrix.Concat(
+                    SKMatrix.CreateTranslation(this.Pivot.X, this.Pivot.Y),
                     SKMatrix.Concat(
-                        SKMatrix.CreateRotationDegrees((float)this.Rotation, this.Pivot.X, this.Pivot.Y),
-                        SKMatrix.CreateScale(this.Scale.X, this.Scale.Y, this.Pivot.X, this.Pivot.Y)
-                    )
-                );
+                        SKMatrix.CreateRotationDegrees((float)this.Rotation),
+                        SKMatrix.Concat(
+                            SKMatrix.CreateScale(this.Scale.X, this.Scale.Y),
+                            SKMatrix.CreateTranslation(-this.Pivot.X, -this.Pivot.Y)))));
         }
 
         public Transform PositionSet(Vector2 newPosition)
@@ -70,12 +69,12 @@ namespace AdofaiTheater.Foundation.Basic
             this.Rotation = angleDegrees;
             return this;
         }
-        public Transform RotateCounterClockwise(double angleDegrees)
+        public Transform RotateClockwise(double angleDegrees)
         {
             this.Rotation += angleDegrees;
             return this;
         }
-        public Transform RotateClockwise(double angleDegrees) => this.RotateCounterClockwise(-angleDegrees);
+        public Transform RotateCounterClockwise(double angleDegrees) => this.RotateClockwise(-angleDegrees);
 
         public Transform ScaleMultiply(Vector2 scaleMultiplier)
         {

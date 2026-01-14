@@ -22,9 +22,21 @@ namespace AdofaiTheater.Foundation.Core
         public Transform Transform { get; set; } = new();
         private List<ITheaterElement> Elements { get; set; } = [];
 
-        public void Draw(SKCanvas canvas)
+        public virtual void Draw(SKCanvas canvas)
         {
-            foreach (var element in this.Elements)
+            // NOTE(seanlb):
+            // In the single element's Draw() function,
+            // we use Transform.Matrix() to calculate the position on canvas,
+            // which has already acccounted for the parent-child transform relationship.
+            //
+            // Therefore, we do not need canvas.Save() and canvas.Restore() here.
+            foreach (
+                var element in
+                from element in this.Elements
+                where element.Transform.Visible
+                orderby element.Transform.Layer descending
+                select element
+                )
             {
                 // NOTE(seanlb): This is temporarily disabled. Might support recursive elements for meme in the future.
                 Debug.Assert(element != this, "Cannot have recursive elements!");

@@ -11,7 +11,7 @@ namespace AdofaiTheater.Foundation.Timeline
 	/// If you specified <see cref="TheaterElementParameterizedAnimation.WithEase"/>,
 	/// then the parameter will first be eased, then given to the action.
 	/// </summary>
-	public class TheaterElementParameterizedAnimation : ITheaterAdjustableDurationEvent
+	public class TheaterElementParameterizedAnimation : ITheaterEvent
 	{
 		public TheaterElementParameterizedAnimation(Action<double> parameterizedAction)
 		{

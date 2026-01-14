@@ -99,7 +99,7 @@ namespace AdofaiTheater.Compiler
                 this.Segments[^2].BoundEvents.Add(subtitleVisibleAnimation);
             }
 
-            this.AttachEventAutoDuration(new TheaterElementParameterizedAnimation(t =>
+            this.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
                 {
                     if (t == 1d) { speechElement.Transform.Visible = false; }
                 }));
@@ -114,11 +114,15 @@ namespace AdofaiTheater.Compiler
             return this;
         }
 
-        public TheaterCompiler AttachEventAutoDuration(ITheaterAdjustableDurationEvent theaterEvent)
+        /// <summary>
+        /// <see cref="AttachEvent(ITheaterEvent)"/> but with more flexibility.
+        /// The <paramref name="onTotalFramesDetermined"/>'s <see cref="int"/> parameter is the total frames once the audio is generated.
+        /// Return the final <see cref="ITheaterEvent"/>.
+        /// </summary>
+        public TheaterCompiler AttachEventAutoDuration(Func<int, ITheaterEvent> onTotalFramesDetermined)
         {
             Debug.Assert(this.Segments.Count > 0, "You need to append a speech before attaching events!");
-            theaterEvent.SetTotalFrames((int)(this.Segments.Last().SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond));
-            this.Segments.Last().BoundEvents.Add(theaterEvent);
+            this.AttachEvent(onTotalFramesDetermined((int)(this.Segments.Last().SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond)));
             return this;
         }
 
