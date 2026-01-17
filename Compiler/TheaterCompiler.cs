@@ -17,6 +17,7 @@ using NAudio.Wave;
 namespace AdofaiTheater.Compiler
 {
     // TODO(seanlb): implement the script compiler
+    [SupportedOSPlatform("windows")]
     public class TheaterCompiler
     {
         public Theater Theater { get; private set; } = new();
@@ -34,6 +35,9 @@ namespace AdofaiTheater.Compiler
             return this;
         }
 
+        // WARN(seanlb): This is probably unnecessary because in the script you need to instantiate an element
+        // in order to add it to the theater. There is no need for this function. Please reduce its calls.
+        // If in the future, there is such need, this warn will get removed.
         public T GetElement<T>(string id) where T : class, ITheaterElement
         {
             // NOTE(seanlb): This can become a compiler error.
@@ -60,7 +64,6 @@ namespace AdofaiTheater.Compiler
         // 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
         private List<TheaterSpeechSegment> Segments { get; set; } = [];
 
-        [SupportedOSPlatform("windows")]
         public TheaterCompiler AppendSpeech(string speech)
         {
             TheaterSpeechSegment segment = 
@@ -71,7 +74,6 @@ namespace AdofaiTheater.Compiler
             return this;
         }
 
-        [SupportedOSPlatform("windows")]
         public TheaterCompiler AppendSpeechAndSubtitle(string speech)
         {
             this.AppendSpeech(speech);
