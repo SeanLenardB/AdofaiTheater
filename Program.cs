@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AdofaiTheater.Compiler;
+using AdofaiTheater.Examples;
 using AdofaiTheater.Foundation.Basic;
 using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Prefabs;
@@ -13,6 +14,13 @@ namespace AdofaiTheater
     public class Program
     {
         private static void Main()
+        {
+            RtawEpisodeOne.EpisodeMain();
+        }
+
+        // NOTE(seanlb): This test suite will remain here for future uses. It has mostly all of the fundamental features
+        // of the engine, and use this test to see if any updates have broken anything.
+        private static void TestSuite()
         {
             TheaterCompiler compiler = new();
 
