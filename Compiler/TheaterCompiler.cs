@@ -93,11 +93,11 @@ namespace AdofaiTheater.Compiler
             {
                 speechElement.Transform.Visible = false;
                 TheaterElementParameterizedAnimation subtitleVisibleAnimation =
-                    new(t =>
+                    new((int)(this.Segments[^2].SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond),
+                    t =>
                     {
                         if (t == 1d) { speechElement.Transform.Visible = true; }
                     });
-                subtitleVisibleAnimation.SetTotalFrames((int)(this.Segments[^2].SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond));
                 this.Segments[^2].BoundEvents.Add(subtitleVisibleAnimation);
             }
 

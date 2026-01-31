@@ -8,15 +8,13 @@ namespace AdofaiTheater.Foundation.Timeline
 {
 	/// <summary>
 	/// A parameterized animation event. The parameter is in range (0,1].
+	/// <br/><br/>
 	/// If you specified <see cref="TheaterElementParameterizedAnimation.WithEase"/>,
 	/// then the parameter will first be eased, then given to the action.
+	/// The eases will be applied in the order they are added, according to <see cref="Eases"/>
 	/// </summary>
 	public class TheaterElementParameterizedAnimation : ITheaterEvent
 	{
-		public TheaterElementParameterizedAnimation(Action<double> parameterizedAction)
-		{
-			this.Action = parameterizedAction;
-		}
 		public TheaterElementParameterizedAnimation(int totalFrames, Action<double> parameterizedAction)
 		{
 			this.TotalFrames = totalFrames;
@@ -24,9 +22,11 @@ namespace AdofaiTheater.Foundation.Timeline
 		}
 
 		public int Frame { get; private set; } = 0;
+		// NOTE(seanlb): Now TotalFrames can only be edited at object instantiation.
+		// I am not 100% sold on this idea.
 		public int TotalFrames { get; private set; } = 1;
 
-		public Action<double> Action { get; set; }
+		public Action<double> Action { get; private set; }
 
 		public bool NextFrame()
 		{
@@ -41,8 +41,6 @@ namespace AdofaiTheater.Foundation.Timeline
 		}
 
 
-
-        public void SetTotalFrames(int frames) { this.TotalFrames = frames; }
 
 		public List<IParameterizedEase> Eases { get; set; } = [];
 
