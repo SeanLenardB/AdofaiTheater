@@ -31,18 +31,22 @@ namespace AdofaiTheater.Foundation.Core
         /// <br/><br/>
         /// See <see cref="https://swharden.com/csdv/skiasharp/video/"/> for more information
         /// </summary>
-        /// <param name="onFrameEnd">returns <c>true</c> if the theater isn't done. <c>false</c> otherwise. The parameter <c>int</c> is the frame index (first frame is 1).</param>
-        public IEnumerable<IVideoFrame> Animate(Predicate<int> onFrameEnd)
+        /// <param name="onFrameStart">returns <c>true</c> if the theater isn't done. <c>false</c> otherwise. The parameter <c>int</c> is the frame index (first frame is 1).</param>
+        public IEnumerable<IVideoFrame> Animate(Predicate<int> onFrameStart)
         {
             using (SKBitmap bitmap = new(this.Configuration.Width, this.Configuration.Height))
             {
                 using (SKCanvas canvas = new(bitmap))
                 {
-                    int frameNumber = 0;
-                    do  // NOTE(seanlb): a do-while loop is necessary to ensure that one-frame theaters can be rendered.
+                    int frameIndex = 0;
+
+                    bool isTheaterNotDone = true;
+                    while (isTheaterNotDone)
                     {
+                        isTheaterNotDone = onFrameStart(frameIndex);
+                        frameIndex++;
+
                         canvas.Clear();
-                        frameNumber++;
                         foreach (
                             var element in
                             from element in this.Elements 
@@ -56,7 +60,6 @@ namespace AdofaiTheater.Foundation.Core
 
                         yield return new SKBitmapFrame(bitmap);
                     }
-                    while (onFrameEnd(frameNumber));
                 }
             }
         }

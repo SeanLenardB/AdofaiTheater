@@ -17,4 +17,5 @@ Now the project turned out to be a giant disaster of linear algebra and ffmpeg s
 
 - [ ] High-resolution images will significantly slow down the rendering process.
 
-- [ ] No support for OnFrameStart animations. Currently, every event is executed on every frame's end.
+- [x] No support for OnFrameStart animations. Currently, every event is executed on every frame's end.
+  - Now, events will be fired on the start of each frame, instead of being called at the end.

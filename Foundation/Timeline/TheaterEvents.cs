@@ -30,11 +30,11 @@ namespace AdofaiTheater.Foundation.Timeline
 
 		public bool NextFrame()
 		{
-			this.Frame++;
 			double parameter = (double)this.Frame / this.TotalFrames;
 			double easedParameter = this.Eases.Aggregate(parameter, (t, ease) => ease.Ease(t));
+			this.Frame++;
 
-			if (this.Frame >= this.TotalFrames) { easedParameter = 1.0; }  // NOTE(seanlb): This is to prevent precision loss
+			if (this.Frame >= this.TotalFrames) { easedParameter = 1.0; }  // NOTE(seanlb): don't know whether this is necessary.
 			this.Action(easedParameter);
 
 			return this.Frame < this.TotalFrames;

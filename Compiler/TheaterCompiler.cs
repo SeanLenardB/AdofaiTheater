@@ -61,7 +61,7 @@ namespace AdofaiTheater.Compiler
         // 1. this.AppendSpeech(...);
         // 2. this.AttachEvent(...);
         // 3. repeat the steps until the theater is done.
-        // 4. this.Theater.Animate();  // NOTE(seanlb): This might be changed to this.Compile();
+        // 4. this.Compile();
         private List<TheaterSpeechSegment> Segments { get; set; } = [];
 
         public TheaterCompiler AppendSpeech(string speech)
@@ -82,28 +82,17 @@ namespace AdofaiTheater.Compiler
             // TODO(seanlb): finish this after optimization
             this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", speechElement);
 
-            // NOTE(seanlb):
-            // If this is the first subtitle, we would want it to be visible at the beginning.
-            // But, if this is not, we don't want it to be on the canvas at the beginning.
-            // So, it will be NOT visible, and be animated to be visible at the end of the previous speech.
-            //
-            // Also note that this is a very scuffed way to do OnFrameStart()
-            // If in the future, there are more frame start events, we should migrate to a proper way to do it.
-            if (this.Segments.Count >= 2)
-            {
-                speechElement.Transform.Visible = false;
-                TheaterElementParameterizedAnimation subtitleVisibleAnimation =
-                    new((int)(this.Segments[^2].SpeechDuration.TotalSeconds * this.Theater.Configuration.FramesPerSecond),
-                    t =>
-                    {
-                        if (t == 1d) { speechElement.Transform.Visible = true; }
-                    });
-                this.Segments[^2].BoundEvents.Add(subtitleVisibleAnimation);
-            }
+            speechElement.Transform.Visible = false;
 
+            // NOTE(seanlb): this is probably lacking in performance if there is too much of it.
+            // We may need to separate OnSegmentAdvance, OnSegmentStart and OnSegmentEnd.
             this.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
                 {
-                    if (t == 1d) { speechElement.Transform.Visible = false; }
+                    if (t == 0d)
+                    {
+                        this.Elements.GetValueOrDefault($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 2}_")?.Transform.Visible = false;
+                        speechElement.Transform.Visible = true;
+                    }
                 }));
 
             return this;
