@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using AdofaiTheater.Foundation.Prefabs;
+using AdofaiTheater.Foundation.Timeline;
+
+namespace AdofaiTheater.Compiler
+{
+    public partial class TheaterCompiler
+    {
+        public Queue<string> CachedSubtitleLines { get; set; } = [];
+
+        /// <summary>
+        /// Reads all the lines in the given file as the subtitles and cache them. Then, in the script,
+        /// call the method <see cref="TakeOneLineFromCache"/> to take one line from the cache.
+        /// <br/><br/>
+        /// This is equivalent of using <see cref="AppendSpeechAndSubtitle(string)"/> multiple times throughout the script.
+        /// However, using a separate file for subtitles removes the hassle of switching between different input methods. That is very annoying.
+        /// <br/><br/>
+        /// <b>Empty lines will be ignored.</b> It's not recommended to have whitespace or empty lines in the subtitle file, because it may mess up your counting.
+        /// To prevent this error, empty lines will raise an assertion failure.
+        /// </summary>
+        public void CacheSubtitlesInFile(string file)
+        {
+            Debug.Assert(File.Exists(file), "This is not a valid file!");
+
+            string[] lines = File.ReadAllLines(file);
+            foreach (string line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    Debug.Assert(true, "There is one line in the subtitle file comprised of only whitespace or is completely empty! This will probably lead to unexpected timelines!");
+                    continue;
+                }
+                this.CachedSubtitleLines.Enqueue(line);
+            }
+        }
+
+        /// <summary>
+        /// Use <see cref="CacheSubtitlesInFile(string)"/> before calling this method.
+        /// </summary>
+        /// <returns>The taken subtitle line from the cache for debugging timeline misalignments.</returns>
+        public string TakeOneLineFromCache()
+        {
+            Debug.Assert(this.CachedSubtitleLines.Count > 0, "The subtitle cache is empty! Did you take in the file, or did you take too many lines?");
+            string line = this.CachedSubtitleLines.Dequeue();
+            this.AppendSpeechAndSubtitle(line);
+            return line;
+        }
+
+        public TheaterCompiler AppendSpeechAndSubtitle(string speech)
+        {
+            this.AppendSpeech(speech);
+
+            TheaterText speechElement = new TheaterText(speech).AsTheaterSubtitle(this.Theater);
+            // TODO(seanlb): finish this after optimization
+            this.AddElement($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 1}_", speechElement);
+
+            speechElement.Transform.Visible = false;
+
+            // NOTE(seanlb): this is probably lacking in performance if there is too much of it.
+            // We may need to separate OnSegmentAdvance, OnSegmentStart and OnSegmentEnd.
+            this.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
+                {
+                    if (t == 0d)
+                    {
+                        this.Elements.GetValueOrDefault($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 2}_")?.Transform.Visible = false;
+                        speechElement.Transform.Visible = true;
+                    }
+                }));
+
+            return this;
+        }
+
+
+    }
+}
