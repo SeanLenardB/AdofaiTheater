@@ -1,2 +1,8 @@
-First line of the script goes here.
-Here is the second line.
+一觉醒来，全球adofai玩家被传送到了adofai大学。
+我是一个普通的adofai玩家，每天打together和糊谱子混日子。
+今天早上起来，我发现自己在一个陌生的房间里。
+窗外的情况让我非常惊讶：我现在处于一座海岛上。
+
+
+Credits:
+Script by quartrond (Inspired by the one-off video by IAMZF)
