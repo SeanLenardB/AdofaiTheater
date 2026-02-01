@@ -19,7 +19,7 @@ namespace AdofaiTheater.Compiler
         /// However, using a separate file for subtitles removes the hassle of switching between different input methods. That is very annoying.
         /// <br/><br/>
         /// <b>Empty lines will be ignored.</b> It's not recommended to have whitespace or empty lines in the subtitle file, because it may mess up your counting.
-        /// To prevent this error, empty lines will raise an assertion failure.
+        /// But it can be helpful with making subtitle scripts more readable. You can check the return value for <see cref="TakeOneLineFromCache"/> to debug.
         /// </summary>
         public void CacheSubtitlesInFile(string file)
         {
@@ -28,11 +28,7 @@ namespace AdofaiTheater.Compiler
             string[] lines = File.ReadAllLines(file);
             foreach (string line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    Debug.Assert(true, "There is one line in the subtitle file comprised of only whitespace or is completely empty! This will probably lead to unexpected timelines!");
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(line)) { continue; }
                 this.CachedSubtitleLines.Enqueue(line);
             }
         }
