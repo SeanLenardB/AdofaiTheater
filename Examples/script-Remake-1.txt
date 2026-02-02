@@ -1,8 +1,79 @@
-一觉醒来，全球adofai玩家被传送到了adofai大学。
-我是一个普通的adofai玩家，每天打together和糊谱子混日子。
-今天早上起来，我发现自己在一个陌生的房间里。
-窗外的情况让我非常惊讶：我现在处于一座海岛上。
+一觉醒来，我进入了adofai学校
+我是一个普通的adofai玩家，每天打together和糊谱子混日子
+今天我早上醒来，准备开始糊sub1450时
+突然发现我已经不在我原来的房间了
+并且我qq上除了adofai以外所有的群都不见了
+就在这时，有一个全体禁言的新群突然有全体消息：
+恭喜各位被adofai学校录取，请各位在今天下午前往学校报到
+我心里非常高兴，因为就在两周前
+我抱着侥幸的心态去报考adofai学校，没想到我这么菜的人居然能被录取
+我一直知道，全球所有adofai玩家最终都会来到这个学校
+并且会在这个学校一直居住
+这个学校建在一座孤岛上
+被录取的人会被传送到那里，qq都会自动退出非adofai群聊
+我看了一眼学校群成员列表，发现我的朋友卡哥也在群里
+我立即致电，但是没有人回答
+我想：这哥们肯定是还在睡觉，他的作息永远都是不正常的
+既然他也被录取了，那么他也在这个岛上
+不如我先发制人，去他家门口给他一个惊喜
+虽然我不知道他在哪里，但是我猜他肯定离我这里不远
+我穿好衣服出门，发现我的门上写着我的名字“凝恩晶”
+我暗自窃喜，心想这样肯定能找到卡哥
+我顺着楼道走，结果发现我家旁边第一个大门上就写着卡哥大名
+刚准备捶门的时候，我听到里面一声熟悉的叫唤：
+“我草，不是吧！”
+我敲了门，卡哥看到了我后说：
+“我就知道你也在这里”
+时间不早，我们两个一起下了楼
+出了门我们才发现，这一整栋楼都是宿舍
+卡哥激动地跳了起来
+“这个宿舍这么高级的？”
+我看了一圈，这地方设施还挺周全
+甚至还有一个买键盘的
+我一看，里面全都是顶级的键盘
+有我之前一直想要的起源火轴，还有顶级玩家用的磁轴键盘
+这个时候，我发现我的手机上收到了1145 adofai币的转账
+qq群里面有一条消息，说：
+“新学期明天开始，请各位查收自己的adofai币，自行购置设备！”
+我惊呆了，这是我头一次这么富裕
+但是我知道不能太潇洒，还是要保留一手的
+我和卡哥精挑细选
+采购了我们被传送到这里前自己用的最顺手的键盘
+上楼放完键盘后，很快到了大礼堂
+过了十几分钟，开学典礼就开始了
+主持的人是最有名adofai论坛的主管理员人提亚
+然后在众人的欢呼之中，目前圈内公认的最强大神Reppij和木寺上了台
+提亚说：
+“接下来让我们欢迎这两位杰出的学长
+为大家联合打谱，目前人类击破的最难谱面
+The Lost Aria！”
+我差点以为我耳朵听错了，The Lost Aria？
+那不是一个新手入门谱子吗？
+我想：应该是一个赫兹级采音版本
+结果两个人上来之后，打开的谱子
+和我三年前闭着眼睛严判完美无瑕的版本完全一样
+而且更让我惊讶的是，这两个人还是用的宽判
+什么情况？我看了坐在我旁边的卡哥
+他不语，只是一味地震惊
+看到我转过来，他说：
+“这是人能打出来的精准吗？”
+“哥们，这东西你不是随便完美无瑕吗？”
+“你在开什么玩笑，这种东西不是我们这些菜鸡能打的
+还完美无瑕，你做你的梦吧！”
 
+--- Description ---
+一觉醒来，我进入了adofai学校。adofai学校位于一座神秘的孤岛上，集聚了全球所有adofai玩家，是所有adofai玩家愿意一辈子都住在的地方。
+我最好的朋友卡哥和我一起，在今年的招生中被录取。现在我进入了adofai学校，我终于有机会和我崇拜的adofai玩家面对面切磋，学习adofai高阶技巧，参加打谱比赛。
+但我逐渐发现，我崇拜的adofai大神，好像比我弱？他们为什么打的是个位数评级的谱子？？？
+还是说，来到这座岛上之后，所有人的实力都会下降，包括我？幸好，我的水平还是保持在了U12以上的。
+究竟是怎么回事？
 
-Credits:
-Script by quartrond (Inspired by the one-off video by IAMZF)
+[Credits]
+Plot & Writing: quartrond (Inspired by the one-off video by ZF)
+Scripting & Assets: Sean Lenard B.
+Produced with AdofaiTheater (https://github.com/SeanLenardB/AdofaiTheater)
+
+[Disclaimer]
+*I do not own the resources used in the video, except for those explicitly credited to me.
+For this series, please visit the Github repository and check the Resources folder for more information.
+If any of the resources used in the video is copyrighted or issued, please contact me using email: cordyshawn@163.com
