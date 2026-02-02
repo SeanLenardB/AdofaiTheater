@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using AdofaiTheater.Foundation.Core;
 using AdofaiTheater.Foundation.Prefabs;
 using AdofaiTheater.Foundation.Timeline;
 
@@ -57,11 +58,14 @@ namespace AdofaiTheater.Compiler
 
             // NOTE(seanlb): this is probably lacking in performance if there is too much of it.
             // We may need to separate OnSegmentAdvance, OnSegmentStart and OnSegmentEnd.
+            //
+            // Do not simplify this line and put it inside the lambda expression. Segments increase as you take more lines!
+            ITheaterElement? previousElement = this.Elements.GetValueOrDefault($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 2}_");
             this.AttachEventAutoDuration(T => new TheaterElementParameterizedAnimation(T, t =>
                 {
                     if (t == 0d)
                     {
-                        this.Elements.GetValueOrDefault($"_THEATER_SPEECH_INDEX_{this.Segments.Count - 2}_")?.Transform.Visible = false;
+                        previousElement?.Transform.Visible = false;
                         speechElement.Transform.Visible = true;
                     }
                 }));
