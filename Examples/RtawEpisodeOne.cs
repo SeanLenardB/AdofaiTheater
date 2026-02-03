@@ -16,6 +16,11 @@ namespace AdofaiTheater.Examples
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.CacheSubtitlesInFile(@"Examples\script-Remake-1.txt");
 
+            // TODO(seanlb): the subtitle rendering has some latency problems
+            // I suspect it is because how events are done, maybe they are off by one frame
+            // and those one-framers accumulate over time
+            // 
+            // Remember to fix it tomorrow.
             for (int i = 0; i < 105; i++)
             {
                 compiler.TakeOneLineFromCache();
