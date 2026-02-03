@@ -16,7 +16,7 @@ namespace AdofaiTheater.Examples
             compiler.Theater.Configuration.OutputPath = "output";
             compiler.CacheSubtitlesInFile(@"Examples\script-Remake-1.txt");
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 105; i++)
             {
                 compiler.TakeOneLineFromCache();
             }
